@@ -143,6 +143,16 @@ footer .bar{font-size:.8rem}
 .editor-login h1,.editor h1,.editor h2{font-family:var(--serif)}
 .editor-note{border:1px solid var(--ink);padding:12px 14px;margin:0 0 24px;font-size:.88rem}
 .editor-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:32px;align-items:start}
+.editor-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--ink);margin:0 0 34px}
+.editor-nav a{display:flex;min-height:58px;align-items:center;justify-content:center;padding:12px 8px;text-align:center;font-weight:600;font-size:.88rem;border-right:1px solid var(--ink)}
+.editor-nav a:last-child{border-right:0}
+.editor-nav a:hover,.editor-nav a:focus-visible,.editor-nav a.on{background:var(--ink);color:var(--paper)}
+.editor-home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.editor-home-card{display:flex;min-height:160px;border:1px solid var(--ink);padding:24px;flex-direction:column;justify-content:space-between}
+.editor-home-card h2{margin:0;font-size:1.35rem}
+.editor-home-card p{margin:24px 0 0;font-size:.86rem;line-height:1.7}
+.editor-home-card:hover,.editor-home-card:focus-visible{background:var(--ink);color:var(--paper)}
+.editor-section{max-width:760px}
 .editor-panel{border-top:1px solid var(--ink);padding-top:18px;margin-bottom:34px}
 .editor-panel h2{font-size:1.25rem;margin:0 0 16px}
 .editor label{display:block;font-size:.82rem;font-weight:600;margin:0 0 12px}
@@ -192,6 +202,10 @@ footer .bar{font-size:.8rem}
   .profile{grid-template-columns:1fr;gap:18px}
   .profile .initial{width:84px;height:84px;font-size:2.2rem}
   .editor-grid{grid-template-columns:1fr}
+  .editor-nav{grid-template-columns:repeat(2,1fr)}
+  .editor-nav a:nth-child(2){border-right:0}
+  .editor-nav a:nth-child(-n+2){border-bottom:1px solid var(--ink)}
+  .editor-home-grid{grid-template-columns:1fr}
 }
 @media (max-width:520px){.writers,.tiles{grid-template-columns:1fr}.writers a{min-height:0}.covers{gap:28px 16px}}
 @media (max-width:520px){.post-gallery{grid-template-columns:1fr}.upload-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -325,12 +339,29 @@ function notFound(){return `<p>찾는 페이지가 없다. <a href="#/" style="b
 
 function renderCategoryNav(){const host=document.getElementById("categoryNav");if(host)host.innerHTML=MENU_CATEGORY_IDS.filter(id=>CATS[id]).map(id=>`<a href="#/archive/${esc(id)}" data-k="${esc(id)}">${esc(CATS[id].ko)}</a>`).join("");}
 function editorLogin(){return `<section class="editor editor-login"><h1>편집자 로그인</h1><form id="loginForm"><label>비밀번호<input name="password" type="password" autocomplete="current-password" required autofocus></label><button class="primary" type="submit">로그인</button><p class="status" role="status"></p></form><a class="back" href="#/writers">필진 목록으로 돌아가기</a></section>`;}
-function editor(editId){
-  if(!editorLoggedIn())return editorLogin();
+function editorNav(current=""){
+  const items=[["new","새 글 작성"],["posts","기존 글"],["writers","필진 관리"],["categories","카테고리 관리"]];
+  return `<nav class="editor-nav" aria-label="편집실 메뉴">${items.map(([id,label])=>`<a class="${current===id?"on":""}" href="#/editor/${id}">${label}</a>`).join("")}</nav>`;
+}
+function editorShell(current,content){
+  return `<section class="editor"><div class="editor-top"><h1>편집실</h1><button id="logoutBtn" class="inline" type="button">로그아웃</button></div><div class="editor-note"><strong>Supabase 서버에 연결되었습니다.</strong> 이곳에서 저장한 내용은 모든 방문자에게 반영됩니다.</div>${editorNav(current)}${content}</section>`;
+}
+function editorPostForm(editId){
   const editing=editId?POSTS.find(p=>String(p.id)===String(editId)):null,today=new Date().toISOString().slice(0,10).replaceAll("-",".");
-  const p=editing||{title:"",sub:"",body:"",w:WRITERS[0]?.id||"",cat:Object.keys(CATS)[0]||"",issue:ISSUES[0]?.id||"",date:today,image:"",imageRecords:[]};
-  const postOptions=POSTS.map(x=>`<li><h3>${esc(x.title)}</h3><p>${esc(W(x.w)?.name||"필진 미지정")} · ${esc(x.date)}</p><a class="inline" href="#/editor/post/${x.id}">수정</a><button class="inline delete-post" data-id="${x.id}" type="button">삭제</button></li>`).join("");
-  return `<section class="editor"><div class="editor-top"><h1>편집실</h1><button id="logoutBtn" class="inline" type="button">로그아웃</button></div><div class="editor-note"><strong>Supabase 서버에 연결되었습니다.</strong> 이곳에서 저장한 내용은 모든 방문자에게 반영됩니다.</div><div class="editor-grid"><div><section class="editor-panel"><h2>${editing?"글 수정":"새 글 작성"}</h2><form id="postForm" data-id="${editing?editing.id:""}"><label>제목<input name="title" value="${esc(p.title)}" required></label><label>부제 또는 소개문<input name="sub" value="${esc(p.sub)}"></label><div class="editor-field"><span class="editor-field-label">본문</span><div class="quill-wrap"><div id="articleEditor">${storedBodyHtml(p.body)}</div></div><span class="upload-help">상단 도구로 제목, 굵게, 기울임, 인용, 목록, 정렬, 링크와 본문 이미지를 넣을 수 있습니다.</span></div><label>필진<select name="writer" required>${WRITERS.map(w=>`<option value="${w.id}" ${w.id===p.w?"selected":""}>${esc(w.name)}</option>`).join("")}</select></label><label>카테고리<select name="category" required>${Object.entries(CATS).map(([slug,c])=>`<option value="${esc(slug)}" ${slug===p.cat?"selected":""}>${esc(c.ko)}</option>`).join("")}</select></label><label>발행호<select name="issue" required>${ISSUES.map(i=>`<option value="${i.id}" ${i.id===p.issue?"selected":""}>${esc(i.title)}</option>`).join("")}</select></label><label>발행일<input name="date" value="${esc(p.date||today)}" placeholder="2026.09.22" required></label><label>대표·갤러리 이미지 파일<input name="images" type="file" accept="image/*" multiple></label><span class="upload-help">여러 파일을 한 번에 선택할 수 있습니다. 첫 번째 이미지는 대표 이미지로 사용됩니다. 본문 중간 이미지는 위 에디터의 이미지 버튼을 사용하세요.</span>${p.imageRecords?.length?`<div class="upload-grid">${p.imageRecords.map(x=>`<label><img src="${esc(x.public_url)}" alt="현재 이미지"><span><input type="checkbox" name="removeImage" value="${x.id}"> 삭제</span></label>`).join("")}</div>`:""}<label>대표 이미지 외부 URL <span style="font-weight:400">(선택)</span><input name="image" type="url" value="${p.image&&!p.images.includes(p.image)?esc(p.image):""}" placeholder="https://..."></label><div class="editor-actions"><button class="primary" type="submit">${editing?"수정 저장":"글 게시"}</button>${editing?`<a class="inline" href="#/editor">취소</a>`:""}</div><p class="status" role="status"></p></form></section><section class="editor-panel"><h2>게시된 글</h2><ul class="editor-list">${postOptions||"<li>아직 글이 없습니다.</li>"}</ul></section></div><div><section class="editor-panel"><h2>필진 관리</h2>${WRITERS.map(w=>`<form class="editor-mini writer-form" data-id="${w.id}"><h3>${esc(w.name)}</h3><label>이름<input name="name" value="${esc(w.name)}" required></label><label>분야<input name="field" value="${esc(w.field)}"></label><label>소개<textarea name="bio">${esc(w.bio)}</textarea></label><button type="submit">필진 정보 저장</button></form>`).join("")}<form id="writerAddForm" class="editor-mini"><h3>필진 추가</h3><label>이름<input name="name" required></label><label>분야<input name="field"></label><label>소개<textarea name="bio"></textarea></label><button type="submit">필진 추가</button></form></section><section class="editor-panel"><h2>카테고리 관리</h2>${Object.entries(CATS).map(([slug,c])=>`<form class="editor-mini category-form" data-id="${c.id}"><h3>${esc(c.ko)}</h3><label>표시 이름<input name="name" value="${esc(c.ko)}" required></label><button type="submit">카테고리 저장</button></form>`).join("")}<form id="categoryAddForm" class="editor-mini"><h3>카테고리 추가</h3><label>영문 주소<input name="slug" pattern="[a-z0-9-]+" required></label><label>표시 이름<input name="name" required></label><button type="submit">카테고리 추가</button></form></section><section class="editor-panel"><h2>발행호 추가</h2><form id="issueAddForm" class="editor-mini"><label>연도<input name="year" type="number" min="2000" max="2100" required></label><label>월<input name="month" type="number" min="1" max="12" required></label><label>호수<input name="vol" type="number" min="1" required></label><button type="submit">발행호 추가</button></form></section><section class="editor-panel"><h2>데이터 백업</h2><button id="exportBtn" type="button">JSON 백업 내려받기</button></section></div></div></section>`;
+  const p=editing||{title:"",sub:"",body:"",w:WRITERS[0]?.id||"",cat:Object.keys(CATS)[0]||"",issue:ISSUES[0]?.id||"",date:today,image:"",images:[],imageRecords:[]};
+  return `<section class="editor-panel editor-section"><h2>${editing?"글 수정":"새 글 작성"}</h2><form id="postForm" data-id="${editing?editing.id:""}"><label>제목<input name="title" value="${esc(p.title)}" required></label><label>부제 또는 소개문<input name="sub" value="${esc(p.sub)}"></label><div class="editor-field"><span class="editor-field-label">본문</span><div class="quill-wrap"><div id="articleEditor">${storedBodyHtml(p.body)}</div></div><span class="upload-help">상단 도구로 제목, 굵게, 기울임, 인용, 목록, 정렬, 링크와 본문 이미지를 넣을 수 있습니다.</span></div><label>필진<select name="writer" required>${WRITERS.map(w=>`<option value="${w.id}" ${w.id===p.w?"selected":""}>${esc(w.name)}</option>`).join("")}</select></label><label>카테고리<select name="category" required>${Object.entries(CATS).map(([slug,c])=>`<option value="${esc(slug)}" ${slug===p.cat?"selected":""}>${esc(c.ko)}</option>`).join("")}</select></label><label>발행호<select name="issue" required>${ISSUES.map(i=>`<option value="${i.id}" ${i.id===p.issue?"selected":""}>${esc(i.title)}</option>`).join("")}</select></label><label>발행일<input name="date" value="${esc(p.date||today)}" placeholder="2026.09.22" required></label><label>대표·갤러리 이미지 파일<input name="images" type="file" accept="image/*" multiple></label><span class="upload-help">여러 파일을 한 번에 선택할 수 있습니다. 첫 번째 이미지는 대표 이미지로 사용됩니다. 본문 중간 이미지는 위 에디터의 이미지 버튼을 사용하세요.</span>${p.imageRecords?.length?`<div class="upload-grid">${p.imageRecords.map(x=>`<label><img src="${esc(x.public_url)}" alt="현재 이미지"><span><input type="checkbox" name="removeImage" value="${x.id}"> 삭제</span></label>`).join("")}</div>`:""}<label>대표 이미지 외부 URL <span style="font-weight:400">(선택)</span><input name="image" type="url" value="${p.image&&!p.images.includes(p.image)?esc(p.image):""}" placeholder="https://..."></label><div class="editor-actions"><button class="primary" type="submit">${editing?"수정 저장":"글 게시"}</button><a class="inline" href="#/editor/posts">취소</a></div><p class="status" role="status"></p></form></section>`;
+}
+function editor(view="",editId=null){
+  if(!editorLoggedIn())return editorLogin();
+  if(view==="new")return editorShell("new",editorPostForm());
+  if(view==="post")return editorShell("posts",editorPostForm(editId));
+  if(view==="posts"){
+    const list=POSTS.map(x=>`<li><h3>${esc(x.title)}</h3><p>${esc(W(x.w)?.name||"필진 미지정")} · ${esc(x.date)}</p><a class="inline" href="#/editor/post/${x.id}">수정</a><button class="inline delete-post" data-id="${x.id}" type="button">삭제</button></li>`).join("");
+    return editorShell("posts",`<section class="editor-panel editor-section"><h2>기존 글</h2><ul class="editor-list">${list||"<li>아직 글이 없습니다.</li>"}</ul></section>`);
+  }
+  if(view==="writers")return editorShell("writers",`<section class="editor-panel editor-section"><h2>필진 관리</h2>${WRITERS.map(w=>`<form class="editor-mini writer-form" data-id="${w.id}"><h3>${esc(w.name)}</h3><label>이름<input name="name" value="${esc(w.name)}" required></label><label>분야<input name="field" value="${esc(w.field)}"></label><label>소개<textarea name="bio">${esc(w.bio)}</textarea></label><button type="submit">필진 정보 저장</button></form>`).join("")}<form id="writerAddForm" class="editor-mini"><h3>필진 추가</h3><label>이름<input name="name" required></label><label>분야<input name="field"></label><label>소개<textarea name="bio"></textarea></label><button type="submit">필진 추가</button></form></section>`);
+  if(view==="categories")return editorShell("categories",`<section class="editor-panel editor-section"><h2>카테고리 관리</h2>${Object.entries(CATS).map(([slug,c])=>`<form class="editor-mini category-form" data-id="${c.id}"><h3>${esc(c.ko)}</h3><label>표시 이름<input name="name" value="${esc(c.ko)}" required></label><button type="submit">카테고리 저장</button></form>`).join("")}<form id="categoryAddForm" class="editor-mini"><h3>카테고리 추가</h3><label>영문 주소<input name="slug" pattern="[a-z0-9-]+" required></label><label>표시 이름<input name="name" required></label><button type="submit">카테고리 추가</button></form></section><section class="editor-panel editor-section"><h2>발행호 추가</h2><form id="issueAddForm" class="editor-mini"><label>연도<input name="year" type="number" min="2000" max="2100" required></label><label>월<input name="month" type="number" min="1" max="12" required></label><label>호수<input name="vol" type="number" min="1" required></label><button type="submit">발행호 추가</button></form></section><section class="editor-panel editor-section"><h2>데이터 백업</h2><button id="exportBtn" type="button">JSON 백업 내려받기</button></section>`);
+  return editorShell("",`<div class="editor-home-grid"><a class="editor-home-card" href="#/editor/new"><h2>새 글 작성</h2><p>Quill 편집기로 새 글과 본문 이미지를 작성합니다.</p></a><a class="editor-home-card" href="#/editor/posts"><h2>기존 글</h2><p>게시된 글을 찾아 수정하거나 삭제합니다.</p></a><a class="editor-home-card" href="#/editor/writers"><h2>필진 관리</h2><p>필진 이름, 분야와 소개를 관리합니다.</p></a><a class="editor-home-card" href="#/editor/categories"><h2>카테고리 관리</h2><p>카테고리와 발행호를 추가하고 백업을 내려받습니다.</p></a></div>`);
 }
 
 async function prepareImage(file){
@@ -379,8 +410,10 @@ async function bindEditor(){
   const login=document.getElementById("loginForm");
   if(login){login.onsubmit=async e=>{e.preventDefault();const status=login.querySelector(".status"),button=login.querySelector("button");button.disabled=true;status.textContent="로그인 중…";const password=new FormData(login).get("password");const {data,error}=await db.auth.signInWithPassword({email:EDITOR_EMAIL,password});if(error||data.user?.email?.toLowerCase()!==EDITOR_EMAIL.toLowerCase()){if(data.session)await db.auth.signOut();status.textContent="비밀번호가 올바르지 않습니다.";button.disabled=false;return;}EDITOR_USER=data.user;try{await loadData();await seedWriters();route();}catch(err){status.textContent=showError(err);button.disabled=false;}};return;}
   if(!editorLoggedIn())return;
+  document.getElementById("logoutBtn").onclick=async()=>{await db.auth.signOut();EDITOR_USER=null;await loadData();route();};
   const form=document.getElementById("postForm");
-  const quill=new Quill("#articleEditor",{
+  if(form){
+   const quill=new Quill("#articleEditor",{
     theme:"snow",
     placeholder:"본문을 입력하세요.",
     modules:{toolbar:[
@@ -393,9 +426,8 @@ async function bindEditor(){
       ["clean"]
     ]}
   });
-  quill.getModule("toolbar").addHandler("image",()=>selectInlineImage(quill,form));
-  document.getElementById("logoutBtn").onclick=async()=>{await db.auth.signOut();EDITOR_USER=null;await loadData();route();};
-  form.onsubmit=async e=>{
+   quill.getModule("toolbar").addHandler("image",()=>selectInlineImage(quill,form));
+   form.onsubmit=async e=>{
     e.preventDefault();const form=e.currentTarget,f=new FormData(form),status=form.querySelector(".status"),submit=form.querySelector('button[type="submit"]');submit.disabled=true;status.textContent="글을 저장하고 있습니다…";
     try{
       const existing=POSTS.find(p=>String(p.id)===form.dataset.id),category=CATS[f.get("category")],date=String(f.get("date")).replaceAll(".","-");
@@ -411,16 +443,17 @@ async function bindEditor(){
       const added=files.length?await uploadImages(postId,files,kept.length):[];
       const external=String(f.get("image")||"").trim(),cover=external||(kept[0]||added[0])?.public_url||null;
       const coverUpdate=await db.from("posts").update({cover_image_url:cover,updated_at:new Date().toISOString()}).eq("id",postId);if(coverUpdate.error)throw coverUpdate.error;
-      await loadData();location.hash="#/editor";route();
+      await loadData();location.hash="#/editor/posts";route();
     }catch(err){status.textContent=showError(err);submit.disabled=false;}
-  };
+   };
+  }
   document.querySelectorAll(".delete-post").forEach(btn=>btn.onclick=async()=>{if(!confirm("이 글을 삭제할까요?"))return;try{const p=POSTS.find(x=>String(x.id)===btn.dataset.id);if(p?.imageRecords.length){const s=await db.storage.from(IMAGE_BUCKET).remove(p.imageRecords.map(x=>x.file_path));if(s.error)throw s.error;}const {error}=await db.from("posts").delete().eq("id",btn.dataset.id);if(error)throw error;await loadData();route();}catch(err){alert(showError(err));}});
   document.querySelectorAll(".writer-form").forEach(form=>form.onsubmit=async e=>{e.preventDefault();const f=new FormData(form),{error}=await db.from("authors").update({name:String(f.get("name")).trim(),initials:String(f.get("name")).trim().slice(0,1),specialties:String(f.get("field")).trim(),bio:String(f.get("bio")).trim()}).eq("id",form.dataset.id);if(error)return alert(showError(error));await loadData();route();});
-  document.getElementById("writerAddForm").onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget),name=String(f.get("name")).trim(),{error}=await db.from("authors").insert({name,initials:name.slice(0,1),specialties:String(f.get("field")).trim(),bio:String(f.get("bio")).trim(),sort_order:WRITERS.length+1});if(error)return alert(showError(error));await loadData();route();};
+  const writerAddForm=document.getElementById("writerAddForm");if(writerAddForm)writerAddForm.onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget),name=String(f.get("name")).trim(),{error}=await db.from("authors").insert({name,initials:name.slice(0,1),specialties:String(f.get("field")).trim(),bio:String(f.get("bio")).trim(),sort_order:WRITERS.length+1});if(error)return alert(showError(error));await loadData();route();};
   document.querySelectorAll(".category-form").forEach(form=>form.onsubmit=async e=>{e.preventDefault();const name=String(new FormData(form).get("name")).trim(),{error}=await db.from("categories").update({name}).eq("id",Number(form.dataset.id));if(error)return alert(showError(error));await loadData();route();});
-  document.getElementById("categoryAddForm").onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget),{error}=await db.from("categories").insert({slug:String(f.get("slug")).trim(),name:String(f.get("name")).trim(),sort_order:Object.keys(CATS).length+1});if(error)return alert(showError(error));await loadData();route();};
-  document.getElementById("issueAddForm").onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget),year=Number(f.get("year")),month=Number(f.get("month")),slug=`${year}-${String(month).padStart(2,"0")}`,title=`${year}년 ${month}월호`,description=`제${Number(f.get("vol"))}호`,published_at=new Date(Date.UTC(year,month-1,1)).toISOString(),{error}=await db.from("issues").insert({title,slug,description,published_at});if(error)return alert(showError(error));await loadData();route();};
-  document.getElementById("exportBtn").onclick=()=>{const blob=new Blob([JSON.stringify({categories:CATS,writers:WRITERS,issues:ISSUES,posts:POSTS},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="gongtonggam-backup.json";a.click();URL.revokeObjectURL(a.href);};
+  const categoryAddForm=document.getElementById("categoryAddForm");if(categoryAddForm)categoryAddForm.onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget),{error}=await db.from("categories").insert({slug:String(f.get("slug")).trim(),name:String(f.get("name")).trim(),sort_order:Object.keys(CATS).length+1});if(error)return alert(showError(error));await loadData();route();};
+  const issueAddForm=document.getElementById("issueAddForm");if(issueAddForm)issueAddForm.onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget),year=Number(f.get("year")),month=Number(f.get("month")),slug=`${year}-${String(month).padStart(2,"0")}`,title=`${year}년 ${month}월호`,description=`제${Number(f.get("vol"))}호`,published_at=new Date(Date.UTC(year,month-1,1)).toISOString(),{error}=await db.from("issues").insert({title,slug,description,published_at});if(error)return alert(showError(error));await loadData();route();};
+  const exportBtn=document.getElementById("exportBtn");if(exportBtn)exportBtn.onclick=()=>{const blob=new Blob([JSON.stringify({categories:CATS,writers:WRITERS,issues:ISSUES,posts:POSTS},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="gongtonggam-backup.json";a.click();URL.revokeObjectURL(a.href);};
 }
 
 const menu=document.getElementById("menu"),openBtn=document.getElementById("openMenu");let armed=true;
@@ -434,7 +467,7 @@ document.addEventListener("pointermove",e=>proximity(e.clientX,e.clientY));docum
 
 function route(){
   const parts=(location.hash.replace(/^#\/?/,"")||"").split("/"),app=document.getElementById("app");let active="";
-  if(!parts[0])app.innerHTML="";else if(parts[0]==="issues"){active="issues";app.innerHTML=issues();}else if(parts[0]==="issue"){active="issues";app.innerHTML=issue(parts[1]);}else if(parts[0]==="archive"){active=parts[1];app.innerHTML=archive(active);}else if(parts[0]==="writers"){active="writers";app.innerHTML=writers();}else if(parts[0]==="writer"){active="writers";app.innerHTML=writer(parts[1]);}else if(parts[0]==="post"){const p=POSTS.find(x=>String(x.id)===String(parts[1]));active=p?.cat||"";app.innerHTML=post(parts[1]);}else if(parts[0]==="about"){active="about";app.innerHTML=about();}else if(parts[0]==="editor"){active="editor";app.innerHTML=editor(parts[1]==="post"?parts[2]:null);}else app.innerHTML=notFound();
+  if(!parts[0])app.innerHTML="";else if(parts[0]==="issues"){active="issues";app.innerHTML=issues();}else if(parts[0]==="issue"){active="issues";app.innerHTML=issue(parts[1]);}else if(parts[0]==="archive"){active=parts[1];app.innerHTML=archive(active);}else if(parts[0]==="writers"){active="writers";app.innerHTML=writers();}else if(parts[0]==="writer"){active="writers";app.innerHTML=writer(parts[1]);}else if(parts[0]==="post"){const p=POSTS.find(x=>String(x.id)===String(parts[1]));active=p?.cat||"";app.innerHTML=post(parts[1]);}else if(parts[0]==="about"){active="about";app.innerHTML=about();}else if(parts[0]==="editor"){active="editor";app.innerHTML=editor(parts[1]||"",parts[2]||null);}else app.innerHTML=notFound();
   document.querySelectorAll("#nav a").forEach(a=>a.classList.toggle("on",a.dataset.k===active));const isHome=!parts[0];document.body.classList.toggle("home",isHome);document.querySelector("header").classList.toggle("bare",isHome);setMenu(false);window.scrollTo(0,0);if(parts[0]==="editor")bindEditor();
 }
 
