@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 105" role="img" aria-labelledby="title">
+  <title id="title">공통감 로고</title>
+  <rect width="500" height="105" fill="#fff"/>
+  <g fill="none" stroke="#000" stroke-linecap="round">
+    <path d="M18 86 L478 86" stroke-width="7"/>
+    <path d="M18 81 L466 20" stroke-width="7"/>
+    <path d="M466 20 L454 78" stroke-width="3"/>
+    <g stroke-width="2.5">
+      <path d="M76 73 L66 83"/><path d="M101 70 L89 84"/><path d="M126 67 L113 84"/>
+      <path d="M151 63 L137 84"/><path d="M176 60 L161 84"/><path d="M201 56 L185 84"/>
+      <path d="M226 53 L209 84"/><path d="M251 50 L233 84"/><path d="M276 46 L257 84"/>
+      <path d="M301 43 L281 84"/><path d="M326 39 L305 84"/><path d="M351 36 L329 84"/>
+      <path d="M376 33 L353 84"/><path d="M401 29 L377 84"/><path d="M426 26 L401 84"/>
+      <path d="M451 22 L425 84"/>
+    </g>
+  </g>
+</svg>
