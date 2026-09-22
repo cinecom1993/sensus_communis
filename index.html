@@ -20,8 +20,8 @@
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:inherit}
-html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--paper)}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--paper);overflow-x:hidden}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 ::selection{background:var(--ink);color:var(--paper)}
@@ -60,12 +60,14 @@ body.home footer{position:fixed;left:0;right:0;bottom:0;border-top-color:transpa
 .list .sub{margin:0;font-size:.92rem;font-weight:400}
 .list .meta{text-align:right}
 
-article{max-width:680px;margin:0 auto}
+article{width:100%;max-width:680px;min-width:0;margin:0 auto;overflow-wrap:anywhere}
 article h1{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.4rem);line-height:1.35;margin:12px 0 14px;letter-spacing:-.015em}
 article .lede{font-family:var(--serif);font-size:1.08rem;margin:0 0 26px;line-height:1.8}
 article .byline{padding:14px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);margin-bottom:34px;display:flex;justify-content:space-between}
 article .byline a{border-bottom:1px solid var(--ink)}
-article .body p{font-family:var(--serif);font-size:1.06rem;line-height:1.95;margin:0 0 1.3em;word-break:keep-all;text-align:justify;text-justify:inter-character;text-align-last:left}
+article .body{width:100%;max-width:100%;min-width:0;overflow-wrap:anywhere;word-break:normal}
+article .body>*{max-width:100%}
+article .body p{font-family:var(--serif);font-size:1.06rem;line-height:1.95;margin:0 0 1.3em;white-space:normal;overflow-wrap:anywhere;word-break:normal;text-align:justify;text-justify:inter-character;text-align-last:left}
 article .body h2,article .body h3{font-family:var(--serif);line-height:1.5;margin:2em 0 .8em}
 article .body h2{font-size:1.45rem}article .body h3{font-size:1.2rem}
 article .body blockquote{font-family:var(--serif);margin:1.8em 0;padding:4px 0 4px 20px;border-left:3px solid var(--ink);line-height:1.9}
@@ -78,7 +80,7 @@ article .body .ql-align-left{text-align:left;text-align-last:left}
 article .body .ql-align-justify{text-align:justify;text-align-last:left}
 .post-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:34px 0}
 .post-gallery figure{margin:0}
-.post-gallery img{display:block;width:100%;height:auto;border:1px solid var(--ink);filter:grayscale(1)}
+.post-gallery img{display:block;width:100%;height:auto;border:1px solid var(--ink);filter:none}
 .back{display:inline-block;margin-top:40px;font-size:.9rem;border-bottom:1px solid var(--ink)}
 .tempnote{border:1px solid var(--ink);padding:10px 14px;font-size:.85rem;margin-bottom:30px}
 
@@ -119,9 +121,9 @@ article .body .ql-align-justify{text-align:justify;text-align-last:left}
 .issuehead{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
 .tile{display:block}
-.tile .img{aspect-ratio:4/3;position:relative;overflow:hidden;border:1px solid var(--ink);background:var(--paper)}
+.tile .img{position:relative;overflow:visible;border:1px solid var(--ink);background:var(--paper)}
 .tile .img svg{position:absolute;inset:0;width:100%;height:100%}
-.tile .img>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1)}
+.tile .img>img{position:static;display:block;width:100%;height:auto;object-fit:contain;filter:none}
 .tile .cap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;gap:10px;opacity:0;transition:opacity .35s ease}
 .tile .cap h4{margin:0;font-family:var(--serif);font-size:1.25rem;line-height:1.4;font-weight:700;word-break:keep-all;background:var(--paper);padding:2px 8px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .tile .cap span{font-size:.85rem;background:var(--paper);padding:1px 8px}
@@ -143,15 +145,8 @@ footer .bar{font-size:.8rem}
 .editor-login h1,.editor h1,.editor h2{font-family:var(--serif)}
 .editor-note{border:1px solid var(--ink);padding:12px 14px;margin:0 0 24px;font-size:.88rem}
 .editor-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:32px;align-items:start}
-.editor-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--ink);margin:0 0 34px}
-.editor-nav a{display:flex;min-height:58px;align-items:center;justify-content:center;padding:12px 8px;text-align:center;font-weight:600;font-size:.88rem;border-right:1px solid var(--ink)}
-.editor-nav a:last-child{border-right:0}
-.editor-nav a:hover,.editor-nav a:focus-visible,.editor-nav a.on{background:var(--ink);color:var(--paper)}
-.editor-home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-.editor-home-card{display:flex;min-height:160px;border:1px solid var(--ink);padding:24px;flex-direction:column;justify-content:space-between}
-.editor-home-card h2{margin:0;font-size:1.35rem}
-.editor-home-card p{margin:24px 0 0;font-size:.86rem;line-height:1.7}
-.editor-home-card:hover,.editor-home-card:focus-visible{background:var(--ink);color:var(--paper)}
+.editor-page-select{display:block;max-width:280px;margin:0 0 34px;font-size:.82rem;font-weight:600}
+.editor-page-select select{margin-top:6px}
 .editor-section{max-width:760px}
 .editor-panel{border-top:1px solid var(--ink);padding-top:18px;margin-bottom:34px}
 .editor-panel h2{font-size:1.25rem;margin:0 0 16px}
@@ -178,7 +173,7 @@ footer .bar{font-size:.8rem}
 .upload-help{display:block;margin:-5px 0 12px;font-size:.78rem;font-weight:400}
 .upload-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 16px}
 .upload-grid label{margin:0;border:1px solid var(--ink);padding:8px;font-weight:400}
-.upload-grid img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;margin-bottom:7px}
+.upload-grid img{display:block;width:100%;height:auto;object-fit:contain;margin-bottom:7px}
 .upload-grid span{display:flex;align-items:center;gap:6px;font-size:.76rem}
 .editor-field{margin:0 0 14px}
 .editor-field-label{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px}
@@ -186,7 +181,7 @@ footer .bar{font-size:.8rem}
 .quill-wrap .ql-toolbar.ql-snow,.quill-wrap .ql-container.ql-snow{border-color:var(--ink);border-radius:0}
 .quill-wrap .ql-toolbar.ql-snow{font-family:var(--sans);padding:7px}
 .quill-wrap .ql-container.ql-snow{font-family:var(--serif);font-size:1rem;min-height:340px}
-.quill-wrap .ql-editor{min-height:340px;line-height:1.85;word-break:keep-all}
+.quill-wrap .ql-editor{min-height:340px;line-height:1.85;max-width:100%;overflow-wrap:anywhere;word-break:normal}
 .quill-wrap .ql-editor p{margin:0 0 1em}
 .quill-wrap .ql-editor img{max-width:100%;height:auto}
 .editor .ql-toolbar button{width:28px;border:0;padding:3px 5px;background:transparent}
@@ -202,10 +197,6 @@ footer .bar{font-size:.8rem}
   .profile{grid-template-columns:1fr;gap:18px}
   .profile .initial{width:84px;height:84px;font-size:2.2rem}
   .editor-grid{grid-template-columns:1fr}
-  .editor-nav{grid-template-columns:repeat(2,1fr)}
-  .editor-nav a:nth-child(2){border-right:0}
-  .editor-nav a:nth-child(-n+2){border-bottom:1px solid var(--ink)}
-  .editor-home-grid{grid-template-columns:1fr}
 }
 @media (max-width:520px){.writers,.tiles{grid-template-columns:1fr}.writers a{min-height:0}.covers{gap:28px 16px}}
 @media (max-width:520px){.post-gallery{grid-template-columns:1fr}.upload-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -341,7 +332,7 @@ function renderCategoryNav(){const host=document.getElementById("categoryNav");i
 function editorLogin(){return `<section class="editor editor-login"><h1>편집자 로그인</h1><form id="loginForm"><label>비밀번호<input name="password" type="password" autocomplete="current-password" required autofocus></label><button class="primary" type="submit">로그인</button><p class="status" role="status"></p></form><a class="back" href="#/writers">필진 목록으로 돌아가기</a></section>`;}
 function editorNav(current=""){
   const items=[["new","새 글 작성"],["posts","기존 글"],["writers","필진 관리"],["categories","카테고리 관리"]];
-  return `<nav class="editor-nav" aria-label="편집실 메뉴">${items.map(([id,label])=>`<a class="${current===id?"on":""}" href="#/editor/${id}">${label}</a>`).join("")}</nav>`;
+  return `<label class="editor-page-select">관리 페이지 이동<select id="editorPageSelect">${items.map(([id,label])=>`<option value="${id}" ${current===id?"selected":""}>${label}</option>`).join("")}</select></label>`;
 }
 function editorShell(current,content){
   return `<section class="editor"><div class="editor-top"><h1>편집실</h1><button id="logoutBtn" class="inline" type="button">로그아웃</button></div><div class="editor-note"><strong>Supabase 서버에 연결되었습니다.</strong> 이곳에서 저장한 내용은 모든 방문자에게 반영됩니다.</div>${editorNav(current)}${content}</section>`;
@@ -361,7 +352,7 @@ function editor(view="",editId=null){
   }
   if(view==="writers")return editorShell("writers",`<section class="editor-panel editor-section"><h2>필진 관리</h2>${WRITERS.map(w=>`<form class="editor-mini writer-form" data-id="${w.id}"><h3>${esc(w.name)}</h3><label>이름<input name="name" value="${esc(w.name)}" required></label><label>분야<input name="field" value="${esc(w.field)}"></label><label>소개<textarea name="bio">${esc(w.bio)}</textarea></label><button type="submit">필진 정보 저장</button></form>`).join("")}<form id="writerAddForm" class="editor-mini"><h3>필진 추가</h3><label>이름<input name="name" required></label><label>분야<input name="field"></label><label>소개<textarea name="bio"></textarea></label><button type="submit">필진 추가</button></form></section>`);
   if(view==="categories")return editorShell("categories",`<section class="editor-panel editor-section"><h2>카테고리 관리</h2>${Object.entries(CATS).map(([slug,c])=>`<form class="editor-mini category-form" data-id="${c.id}"><h3>${esc(c.ko)}</h3><label>표시 이름<input name="name" value="${esc(c.ko)}" required></label><button type="submit">카테고리 저장</button></form>`).join("")}<form id="categoryAddForm" class="editor-mini"><h3>카테고리 추가</h3><label>영문 주소<input name="slug" pattern="[a-z0-9-]+" required></label><label>표시 이름<input name="name" required></label><button type="submit">카테고리 추가</button></form></section><section class="editor-panel editor-section"><h2>발행호 추가</h2><form id="issueAddForm" class="editor-mini"><label>연도<input name="year" type="number" min="2000" max="2100" required></label><label>월<input name="month" type="number" min="1" max="12" required></label><label>호수<input name="vol" type="number" min="1" required></label><button type="submit">발행호 추가</button></form></section><section class="editor-panel editor-section"><h2>데이터 백업</h2><button id="exportBtn" type="button">JSON 백업 내려받기</button></section>`);
-  return editorShell("",`<div class="editor-home-grid"><a class="editor-home-card" href="#/editor/new"><h2>새 글 작성</h2><p>Quill 편집기로 새 글과 본문 이미지를 작성합니다.</p></a><a class="editor-home-card" href="#/editor/posts"><h2>기존 글</h2><p>게시된 글을 찾아 수정하거나 삭제합니다.</p></a><a class="editor-home-card" href="#/editor/writers"><h2>필진 관리</h2><p>필진 이름, 분야와 소개를 관리합니다.</p></a><a class="editor-home-card" href="#/editor/categories"><h2>카테고리 관리</h2><p>카테고리와 발행호를 추가하고 백업을 내려받습니다.</p></a></div>`);
+  return editorShell("new",editorPostForm());
 }
 
 async function prepareImage(file){
@@ -408,9 +399,10 @@ async function uploadImages(postId,files,startOrder){
 
 async function bindEditor(){
   const login=document.getElementById("loginForm");
-  if(login){login.onsubmit=async e=>{e.preventDefault();const status=login.querySelector(".status"),button=login.querySelector("button");button.disabled=true;status.textContent="로그인 중…";const password=new FormData(login).get("password");const {data,error}=await db.auth.signInWithPassword({email:EDITOR_EMAIL,password});if(error||data.user?.email?.toLowerCase()!==EDITOR_EMAIL.toLowerCase()){if(data.session)await db.auth.signOut();status.textContent="비밀번호가 올바르지 않습니다.";button.disabled=false;return;}EDITOR_USER=data.user;try{await loadData();await seedWriters();route();}catch(err){status.textContent=showError(err);button.disabled=false;}};return;}
+  if(login){login.onsubmit=async e=>{e.preventDefault();const status=login.querySelector(".status"),button=login.querySelector("button");button.disabled=true;status.textContent="로그인 중…";const password=new FormData(login).get("password");const {data,error}=await db.auth.signInWithPassword({email:EDITOR_EMAIL,password});if(error||data.user?.email?.toLowerCase()!==EDITOR_EMAIL.toLowerCase()){if(data.session)await db.auth.signOut();status.textContent="비밀번호가 올바르지 않습니다.";button.disabled=false;return;}EDITOR_USER=data.user;try{await loadData();await seedWriters();location.hash="#/editor/new";}catch(err){status.textContent=showError(err);button.disabled=false;}};return;}
   if(!editorLoggedIn())return;
   document.getElementById("logoutBtn").onclick=async()=>{await db.auth.signOut();EDITOR_USER=null;await loadData();route();};
+  const pageSelect=document.getElementById("editorPageSelect");if(pageSelect)pageSelect.onchange=()=>{location.hash=`#/editor/${pageSelect.value}`;};
   const form=document.getElementById("postForm");
   if(form){
    const quill=new Quill("#articleEditor",{
