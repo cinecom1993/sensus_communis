@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
 <style>
 :root{
   --paper:#ffffff; --ink:#000000;
@@ -65,6 +66,16 @@ article .lede{font-family:var(--serif);font-size:1.08rem;margin:0 0 26px;line-he
 article .byline{padding:14px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);margin-bottom:34px;display:flex;justify-content:space-between}
 article .byline a{border-bottom:1px solid var(--ink)}
 article .body p{font-family:var(--serif);font-size:1.06rem;line-height:1.95;margin:0 0 1.3em;word-break:keep-all;text-align:justify;text-justify:inter-character;text-align-last:left}
+article .body h2,article .body h3{font-family:var(--serif);line-height:1.5;margin:2em 0 .8em}
+article .body h2{font-size:1.45rem}article .body h3{font-size:1.2rem}
+article .body blockquote{font-family:var(--serif);margin:1.8em 0;padding:4px 0 4px 20px;border-left:3px solid var(--ink);line-height:1.9}
+article .body ul,article .body ol{font-family:var(--serif);line-height:1.9;padding-left:1.6em;margin:0 0 1.3em}
+article .body a{border-bottom:1px solid currentColor}
+article .body img{display:block;max-width:100%;height:auto;margin:2em auto}
+article .body .ql-align-center{text-align:center;text-align-last:center}
+article .body .ql-align-right{text-align:right;text-align-last:right}
+article .body .ql-align-left{text-align:left;text-align-last:left}
+article .body .ql-align-justify{text-align:justify;text-align-last:left}
 .post-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:34px 0}
 .post-gallery figure{margin:0}
 .post-gallery img{display:block;width:100%;height:auto;border:1px solid var(--ink);filter:grayscale(1)}
@@ -138,7 +149,6 @@ footer .bar{font-size:.8rem}
 .editor input,.editor textarea,.editor select,.editor button{width:100%;border:1px solid var(--ink);border-radius:0;background:var(--paper);color:var(--ink);font:inherit;padding:9px 10px}
 .editor input[type="checkbox"]{width:auto;padding:0}
 .editor textarea{min-height:110px;resize:vertical;line-height:1.65}
-.editor textarea.body-input{min-height:300px;font-family:var(--serif)}
 .editor button{cursor:pointer;font-weight:600}
 .editor button.primary{background:var(--ink);color:var(--paper)}
 .editor button.inline,.editor a.inline{width:auto;display:inline-block;padding:6px 10px;font-size:.82rem;border:1px solid var(--ink);margin-right:6px}
@@ -160,6 +170,20 @@ footer .bar{font-size:.8rem}
 .upload-grid label{margin:0;border:1px solid var(--ink);padding:8px;font-weight:400}
 .upload-grid img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;margin-bottom:7px}
 .upload-grid span{display:flex;align-items:center;gap:6px;font-size:.76rem}
+.editor-field{margin:0 0 14px}
+.editor-field-label{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px}
+.quill-wrap{background:var(--paper)}
+.quill-wrap .ql-toolbar.ql-snow,.quill-wrap .ql-container.ql-snow{border-color:var(--ink);border-radius:0}
+.quill-wrap .ql-toolbar.ql-snow{font-family:var(--sans);padding:7px}
+.quill-wrap .ql-container.ql-snow{font-family:var(--serif);font-size:1rem;min-height:340px}
+.quill-wrap .ql-editor{min-height:340px;line-height:1.85;word-break:keep-all}
+.quill-wrap .ql-editor p{margin:0 0 1em}
+.quill-wrap .ql-editor img{max-width:100%;height:auto}
+.editor .ql-toolbar button{width:28px;border:0;padding:3px 5px;background:transparent}
+.editor .ql-toolbar button:hover,.editor .ql-toolbar button.ql-active{background:#eee;color:var(--ink)}
+.editor .ql-toolbar .ql-picker{font:inherit}
+.editor .ql-toolbar select{width:auto;border:0;padding:0}
+.editor-uploading{opacity:.65;pointer-events:none}
 
 @media (max-width:860px){.writers,.covers,.tiles{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:760px){
@@ -207,6 +231,8 @@ footer .bar{font-size:.8rem}
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import Quill from "https://cdn.jsdelivr.net/npm/quill@2.0.3/+esm";
+import DOMPurify from "https://cdn.jsdelivr.net/npm/dompurify@3/+esm";
 
 const SUPABASE_URL = "https://abkboomskewfvadkaapc.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_I_mGGqncIBxDLz6ggAbihQ_YQg7rCCB";
@@ -238,6 +264,13 @@ const formatDate = value => value ? new Date(value).toLocaleDateString("ko-KR", 
 const editorLoggedIn = () => Boolean(EDITOR_USER && EDITOR_USER.email?.toLowerCase() === EDITOR_EMAIL.toLowerCase());
 const slugify = text => String(text).trim().toLowerCase().replace(/[^a-z0-9가-힣]+/g,"-").replace(/^-|-$/g,"").slice(0,70) || "post";
 const showError = error => error?.message || "요청을 처리하지 못했습니다.";
+const looksLikeHtml = value => /<\/?[a-z][\s\S]*>/i.test(String(value||""));
+const plainTextToHtml = value => String(value||"").split(/\n\s*\n/).filter(Boolean).map(part=>`<p>${esc(part).replace(/\n/g,"<br>")}</p>`).join("");
+const sanitizeBody = value => DOMPurify.sanitize(String(value||""),{
+  ALLOWED_TAGS:["p","br","h2","h3","strong","b","em","i","u","s","blockquote","ul","ol","li","a","img","span","sub","sup"],
+  ALLOWED_ATTR:["href","target","rel","src","alt","title","class"]
+});
+const storedBodyHtml = value => sanitizeBody(looksLikeHtml(value)?value:plainTextToHtml(value));
 
 function mapData(authors,categories,issues,posts,images){
   CATS={}; categories.forEach(c=>CATS[c.slug]={id:c.id,ko:c.name,desc:CATEGORY_DESCRIPTIONS[c.slug]||""});
@@ -275,7 +308,7 @@ async function seedWriters(){
 }
 
 const media=p=>p.image?`<img src="${esc(p.image)}" alt="${esc(p.title)}">`:(p.images[0]?`<img src="${esc(p.images[0])}" alt="${esc(p.title)}">`:"");
-const bodyHtml=p=>(p.body||LOREM.join("\n\n")).split(/\n\s*\n/).filter(Boolean).map(t=>`<p>${esc(t).replace(/\n/g,"<br>")}</p>`).join("");
+const bodyHtml=p=>storedBodyHtml(p.body||LOREM.join("\n\n"));
 
 function row(p,showAuthor=true){
   const writer=W(p.w),cat=CATS[p.cat],iss=ISSUES.find(i=>i.id===p.issue);
@@ -297,7 +330,7 @@ function editor(editId){
   const editing=editId?POSTS.find(p=>String(p.id)===String(editId)):null,today=new Date().toISOString().slice(0,10).replaceAll("-",".");
   const p=editing||{title:"",sub:"",body:"",w:WRITERS[0]?.id||"",cat:Object.keys(CATS)[0]||"",issue:ISSUES[0]?.id||"",date:today,image:"",imageRecords:[]};
   const postOptions=POSTS.map(x=>`<li><h3>${esc(x.title)}</h3><p>${esc(W(x.w)?.name||"필진 미지정")} · ${esc(x.date)}</p><a class="inline" href="#/editor/post/${x.id}">수정</a><button class="inline delete-post" data-id="${x.id}" type="button">삭제</button></li>`).join("");
-  return `<section class="editor"><div class="editor-top"><h1>편집실</h1><button id="logoutBtn" class="inline" type="button">로그아웃</button></div><div class="editor-note"><strong>Supabase 서버에 연결되었습니다.</strong> 이곳에서 저장한 내용은 모든 방문자에게 반영됩니다.</div><div class="editor-grid"><div><section class="editor-panel"><h2>${editing?"글 수정":"새 글 작성"}</h2><form id="postForm" data-id="${editing?editing.id:""}"><label>제목<input name="title" value="${esc(p.title)}" required></label><label>부제 또는 소개문<input name="sub" value="${esc(p.sub)}"></label><label>본문<textarea class="body-input" name="body" placeholder="문단과 문단 사이는 한 줄 비워 입력하세요." required>${esc(p.body)}</textarea></label><label>필진<select name="writer" required>${WRITERS.map(w=>`<option value="${w.id}" ${w.id===p.w?"selected":""}>${esc(w.name)}</option>`).join("")}</select></label><label>카테고리<select name="category" required>${Object.entries(CATS).map(([slug,c])=>`<option value="${esc(slug)}" ${slug===p.cat?"selected":""}>${esc(c.ko)}</option>`).join("")}</select></label><label>발행호<select name="issue" required>${ISSUES.map(i=>`<option value="${i.id}" ${i.id===p.issue?"selected":""}>${esc(i.title)}</option>`).join("")}</select></label><label>발행일<input name="date" value="${esc(p.date||today)}" placeholder="2026.09.22" required></label><label>이미지 파일<input name="images" type="file" accept="image/*" multiple></label><span class="upload-help">여러 파일을 한 번에 선택할 수 있습니다. 첫 번째 이미지는 대표 이미지로 사용됩니다.</span>${p.imageRecords?.length?`<div class="upload-grid">${p.imageRecords.map(x=>`<label><img src="${esc(x.public_url)}" alt="현재 이미지"><span><input type="checkbox" name="removeImage" value="${x.id}"> 삭제</span></label>`).join("")}</div>`:""}<label>대표 이미지 외부 URL <span style="font-weight:400">(선택)</span><input name="image" type="url" value="${p.image&&!p.images.includes(p.image)?esc(p.image):""}" placeholder="https://..."></label><div class="editor-actions"><button class="primary" type="submit">${editing?"수정 저장":"글 게시"}</button>${editing?`<a class="inline" href="#/editor">취소</a>`:""}</div><p class="status" role="status"></p></form></section><section class="editor-panel"><h2>게시된 글</h2><ul class="editor-list">${postOptions||"<li>아직 글이 없습니다.</li>"}</ul></section></div><div><section class="editor-panel"><h2>필진 관리</h2>${WRITERS.map(w=>`<form class="editor-mini writer-form" data-id="${w.id}"><h3>${esc(w.name)}</h3><label>이름<input name="name" value="${esc(w.name)}" required></label><label>분야<input name="field" value="${esc(w.field)}"></label><label>소개<textarea name="bio">${esc(w.bio)}</textarea></label><button type="submit">필진 정보 저장</button></form>`).join("")}<form id="writerAddForm" class="editor-mini"><h3>필진 추가</h3><label>이름<input name="name" required></label><label>분야<input name="field"></label><label>소개<textarea name="bio"></textarea></label><button type="submit">필진 추가</button></form></section><section class="editor-panel"><h2>카테고리 관리</h2>${Object.entries(CATS).map(([slug,c])=>`<form class="editor-mini category-form" data-id="${c.id}"><h3>${esc(c.ko)}</h3><label>표시 이름<input name="name" value="${esc(c.ko)}" required></label><button type="submit">카테고리 저장</button></form>`).join("")}<form id="categoryAddForm" class="editor-mini"><h3>카테고리 추가</h3><label>영문 주소<input name="slug" pattern="[a-z0-9-]+" required></label><label>표시 이름<input name="name" required></label><button type="submit">카테고리 추가</button></form></section><section class="editor-panel"><h2>발행호 추가</h2><form id="issueAddForm" class="editor-mini"><label>연도<input name="year" type="number" min="2000" max="2100" required></label><label>월<input name="month" type="number" min="1" max="12" required></label><label>호수<input name="vol" type="number" min="1" required></label><button type="submit">발행호 추가</button></form></section><section class="editor-panel"><h2>데이터 백업</h2><button id="exportBtn" type="button">JSON 백업 내려받기</button></section></div></div></section>`;
+  return `<section class="editor"><div class="editor-top"><h1>편집실</h1><button id="logoutBtn" class="inline" type="button">로그아웃</button></div><div class="editor-note"><strong>Supabase 서버에 연결되었습니다.</strong> 이곳에서 저장한 내용은 모든 방문자에게 반영됩니다.</div><div class="editor-grid"><div><section class="editor-panel"><h2>${editing?"글 수정":"새 글 작성"}</h2><form id="postForm" data-id="${editing?editing.id:""}"><label>제목<input name="title" value="${esc(p.title)}" required></label><label>부제 또는 소개문<input name="sub" value="${esc(p.sub)}"></label><div class="editor-field"><span class="editor-field-label">본문</span><div class="quill-wrap"><div id="articleEditor">${storedBodyHtml(p.body)}</div></div><span class="upload-help">상단 도구로 제목, 굵게, 기울임, 인용, 목록, 정렬, 링크와 본문 이미지를 넣을 수 있습니다.</span></div><label>필진<select name="writer" required>${WRITERS.map(w=>`<option value="${w.id}" ${w.id===p.w?"selected":""}>${esc(w.name)}</option>`).join("")}</select></label><label>카테고리<select name="category" required>${Object.entries(CATS).map(([slug,c])=>`<option value="${esc(slug)}" ${slug===p.cat?"selected":""}>${esc(c.ko)}</option>`).join("")}</select></label><label>발행호<select name="issue" required>${ISSUES.map(i=>`<option value="${i.id}" ${i.id===p.issue?"selected":""}>${esc(i.title)}</option>`).join("")}</select></label><label>발행일<input name="date" value="${esc(p.date||today)}" placeholder="2026.09.22" required></label><label>대표·갤러리 이미지 파일<input name="images" type="file" accept="image/*" multiple></label><span class="upload-help">여러 파일을 한 번에 선택할 수 있습니다. 첫 번째 이미지는 대표 이미지로 사용됩니다. 본문 중간 이미지는 위 에디터의 이미지 버튼을 사용하세요.</span>${p.imageRecords?.length?`<div class="upload-grid">${p.imageRecords.map(x=>`<label><img src="${esc(x.public_url)}" alt="현재 이미지"><span><input type="checkbox" name="removeImage" value="${x.id}"> 삭제</span></label>`).join("")}</div>`:""}<label>대표 이미지 외부 URL <span style="font-weight:400">(선택)</span><input name="image" type="url" value="${p.image&&!p.images.includes(p.image)?esc(p.image):""}" placeholder="https://..."></label><div class="editor-actions"><button class="primary" type="submit">${editing?"수정 저장":"글 게시"}</button>${editing?`<a class="inline" href="#/editor">취소</a>`:""}</div><p class="status" role="status"></p></form></section><section class="editor-panel"><h2>게시된 글</h2><ul class="editor-list">${postOptions||"<li>아직 글이 없습니다.</li>"}</ul></section></div><div><section class="editor-panel"><h2>필진 관리</h2>${WRITERS.map(w=>`<form class="editor-mini writer-form" data-id="${w.id}"><h3>${esc(w.name)}</h3><label>이름<input name="name" value="${esc(w.name)}" required></label><label>분야<input name="field" value="${esc(w.field)}"></label><label>소개<textarea name="bio">${esc(w.bio)}</textarea></label><button type="submit">필진 정보 저장</button></form>`).join("")}<form id="writerAddForm" class="editor-mini"><h3>필진 추가</h3><label>이름<input name="name" required></label><label>분야<input name="field"></label><label>소개<textarea name="bio"></textarea></label><button type="submit">필진 추가</button></form></section><section class="editor-panel"><h2>카테고리 관리</h2>${Object.entries(CATS).map(([slug,c])=>`<form class="editor-mini category-form" data-id="${c.id}"><h3>${esc(c.ko)}</h3><label>표시 이름<input name="name" value="${esc(c.ko)}" required></label><button type="submit">카테고리 저장</button></form>`).join("")}<form id="categoryAddForm" class="editor-mini"><h3>카테고리 추가</h3><label>영문 주소<input name="slug" pattern="[a-z0-9-]+" required></label><label>표시 이름<input name="name" required></label><button type="submit">카테고리 추가</button></form></section><section class="editor-panel"><h2>발행호 추가</h2><form id="issueAddForm" class="editor-mini"><label>연도<input name="year" type="number" min="2000" max="2100" required></label><label>월<input name="month" type="number" min="1" max="12" required></label><label>호수<input name="vol" type="number" min="1" required></label><button type="submit">발행호 추가</button></form></section><section class="editor-panel"><h2>데이터 백업</h2><button id="exportBtn" type="button">JSON 백업 내려받기</button></section></div></div></section>`;
 }
 
 async function prepareImage(file){
@@ -306,6 +339,29 @@ async function prepareImage(file){
   const bitmap=await createImageBitmap(file),max=1800,scale=Math.min(1,max/Math.max(bitmap.width,bitmap.height));
   const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));canvas.getContext("2d").drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
   return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error(`${file.name}: 이미지를 처리하지 못했습니다.`)),"image/webp",.84));
+}
+async function uploadInlineImage(file){
+  const blob=await prepareImage(file);
+  const path=`inline/${EDITOR_USER.id}/${Date.now()}-${crypto.randomUUID()}.webp`;
+  const {error}=await db.storage.from(IMAGE_BUCKET).upload(path,blob,{contentType:"image/webp",upsert:false});
+  if(error)throw error;
+  return db.storage.from(IMAGE_BUCKET).getPublicUrl(path).data.publicUrl;
+}
+function selectInlineImage(quill,form){
+  const input=document.createElement("input");
+  input.type="file";input.accept="image/*";
+  input.onchange=async()=>{
+    const file=input.files?.[0];if(!file)return;
+    const status=form.querySelector(".status"),wrap=form.querySelector(".quill-wrap"),submit=form.querySelector('button[type="submit"]');
+    status.textContent="본문 이미지를 업로드하고 있습니다…";wrap.classList.add("editor-uploading");submit.disabled=true;
+    try{
+      const url=await uploadInlineImage(file),range=quill.getSelection(true)||{index:quill.getLength()-1};
+      quill.insertEmbed(range.index,"image",url,"user");
+      quill.setSelection(range.index+1,0,"silent");status.textContent="본문 이미지를 삽입했습니다.";
+    }catch(error){status.textContent=showError(error);}
+    finally{wrap.classList.remove("editor-uploading");submit.disabled=false;}
+  };
+  input.click();
 }
 async function uploadImages(postId,files,startOrder){
   const rows=[];
@@ -323,12 +379,29 @@ async function bindEditor(){
   const login=document.getElementById("loginForm");
   if(login){login.onsubmit=async e=>{e.preventDefault();const status=login.querySelector(".status"),button=login.querySelector("button");button.disabled=true;status.textContent="로그인 중…";const password=new FormData(login).get("password");const {data,error}=await db.auth.signInWithPassword({email:EDITOR_EMAIL,password});if(error||data.user?.email?.toLowerCase()!==EDITOR_EMAIL.toLowerCase()){if(data.session)await db.auth.signOut();status.textContent="비밀번호가 올바르지 않습니다.";button.disabled=false;return;}EDITOR_USER=data.user;try{await loadData();await seedWriters();route();}catch(err){status.textContent=showError(err);button.disabled=false;}};return;}
   if(!editorLoggedIn())return;
+  const form=document.getElementById("postForm");
+  const quill=new Quill("#articleEditor",{
+    theme:"snow",
+    placeholder:"본문을 입력하세요.",
+    modules:{toolbar:[
+      [{header:[2,3,false]}],
+      ["bold","italic","underline","strike"],
+      ["blockquote"],
+      [{list:"ordered"},{list:"bullet"}],
+      [{align:[]}],
+      ["link","image"],
+      ["clean"]
+    ]}
+  });
+  quill.getModule("toolbar").addHandler("image",()=>selectInlineImage(quill,form));
   document.getElementById("logoutBtn").onclick=async()=>{await db.auth.signOut();EDITOR_USER=null;await loadData();route();};
-  document.getElementById("postForm").onsubmit=async e=>{
+  form.onsubmit=async e=>{
     e.preventDefault();const form=e.currentTarget,f=new FormData(form),status=form.querySelector(".status"),submit=form.querySelector('button[type="submit"]');submit.disabled=true;status.textContent="글을 저장하고 있습니다…";
     try{
       const existing=POSTS.find(p=>String(p.id)===form.dataset.id),category=CATS[f.get("category")],date=String(f.get("date")).replaceAll(".","-");
-      const base={title:String(f.get("title")).trim(),excerpt:String(f.get("sub")).trim(),content:String(f.get("body")).trim(),author_id:f.get("writer"),category_id:category.id,issue_id:Number(f.get("issue")),published_at:new Date(`${date}T00:00:00+09:00`).toISOString(),status:"published",updated_at:new Date().toISOString()};
+      if(!quill.getText().trim()&&!quill.root.querySelector("img"))throw new Error("본문을 입력하세요.");
+      const content=sanitizeBody(quill.getSemanticHTML()).trim();
+      const base={title:String(f.get("title")).trim(),excerpt:String(f.get("sub")).trim(),content,author_id:f.get("writer"),category_id:category.id,issue_id:Number(f.get("issue")),published_at:new Date(`${date}T00:00:00+09:00`).toISOString(),status:"published",updated_at:new Date().toISOString()};
       let postId=existing?.id;
       if(existing){const {error}=await db.from("posts").update(base).eq("id",postId);if(error)throw error;}
       else{const slug=`${slugify(base.title)}-${Date.now().toString(36)}`;const {data,error}=await db.from("posts").insert({...base,slug}).select("id").single();if(error)throw error;postId=data.id;}
