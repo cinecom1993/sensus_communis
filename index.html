@@ -64,7 +64,7 @@ article h1{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.4rem);line-heig
 article .lede{font-family:var(--serif);font-size:1.08rem;margin:0 0 26px;line-height:1.8}
 article .byline{padding:14px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);margin-bottom:34px;display:flex;justify-content:space-between}
 article .byline a{border-bottom:1px solid var(--ink)}
-article .body p{font-family:var(--serif);font-size:1.06rem;line-height:1.95;margin:0 0 1.3em;word-break:keep-all}
+article .body p{font-family:var(--serif);font-size:1.06rem;line-height:1.95;margin:0 0 1.3em;word-break:keep-all;text-align:justify;text-justify:inter-character;text-align-last:left}
 .post-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:34px 0}
 .post-gallery figure{margin:0}
 .post-gallery img{display:block;width:100%;height:auto;border:1px solid var(--ink);filter:grayscale(1)}
@@ -109,17 +109,17 @@ article .body p{font-family:var(--serif);font-size:1.06rem;line-height:1.95;marg
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
 .tile{display:block}
 .tile .img{aspect-ratio:4/3;position:relative;overflow:hidden;border:1px solid var(--ink);background:var(--paper)}
-.tile .img svg{position:absolute;inset:0;width:100%;height:100%;transition:filter .35s ease,opacity .35s ease}
-.tile .img>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1);transition:filter .35s ease,opacity .35s ease}
+.tile .img svg{position:absolute;inset:0;width:100%;height:100%}
+.tile .img>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1)}
 .tile .cap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;gap:10px;opacity:0;transition:opacity .35s ease}
 .tile .cap h4{margin:0;font-family:var(--serif);font-size:1.25rem;line-height:1.4;font-weight:700;word-break:keep-all;background:var(--paper);padding:2px 8px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .tile .cap span{font-size:.85rem;background:var(--paper);padding:1px 8px}
 .tile .below{display:none;margin-top:10px}
+.tile .below.no-image{display:block;margin-top:0;padding:18px;border:1px solid var(--ink);min-height:120px}
 .tile .below h4{margin:0;font-family:var(--serif);font-size:1.05rem}
 .tile .below span{font-size:.84rem}
 @media (hover:hover){
-  .tile:hover .img svg,.tile:focus-visible .img svg,.tile:hover .img>img,.tile:focus-visible .img>img{filter:grayscale(1) blur(7px);opacity:.45}
-  .tile:hover .cap,.tile:focus-visible .cap{opacity:1}
+  .tiles .tile:hover .cap,.tiles .tile:focus-visible .cap{opacity:1}
 }
 @media (hover:none){.tile .below{display:block}}
 
@@ -239,19 +239,6 @@ const editorLoggedIn = () => Boolean(EDITOR_USER && EDITOR_USER.email?.toLowerCa
 const slugify = text => String(text).trim().toLowerCase().replace(/[^a-z0-9가-힣]+/g,"-").replace(/^-|-$/g,"").slice(0,70) || "post";
 const showError = error => error?.message || "요청을 처리하지 못했습니다.";
 
-function art(seed=1,w=400,h=300){
-  seed=String(seed).split("").reduce((a,c)=>a+c.charCodeAt(0),1);
-  const r=n=>{seed=(seed*9301+49297)%233280;return seed/233280*n;};
-  const kind=Math.floor(r(6)),inv=r(1)<.35,fg=inv?"#fff":"#000",bg=inv?"#000":"#fff";let g="";
-  if(kind===0){for(let i=1;i<9;i++)g+=`<circle cx="${w*(.3+r(.4))|0}" cy="${h/2}" r="${i*22}" fill="none" stroke="${fg}" stroke-width="${1+r(3)}"/>`;}
-  else if(kind===1){let y=0;while(y<h){const t=6+r(26);g+=`<rect x="0" y="${y}" width="${w}" height="${t*.55}" fill="${fg}"/>`;y+=t;}}
-  else if(kind===2){for(let i=-h;i<w;i+=14+r(10))g+=`<line x1="${i}" y1="0" x2="${i+h}" y2="${h}" stroke="${fg}" stroke-width="${1+r(5)}"/>`;}
-  else if(kind===3){const s=18+r(14);for(let x=s/2;x<w;x+=s)for(let y=s/2;y<h;y+=s)g+=`<circle cx="${x}" cy="${y}" r="${1+r(s/3)}" fill="${fg}"/>`;}
-  else if(kind===4){g+=`<circle cx="${w*(.25+r(.5))}" cy="${h*(.6+r(.4))}" r="${h*(.45+r(.3))}" fill="${fg}"/><rect x="0" y="${h*(.15+r(.2))}" width="${w}" height="1.5" fill="${fg}"/>`;}
-  else{let x=0;while(x<w){const t=4+r(40);g+=`<rect x="${x}" y="0" width="${t*.5}" height="${h}" fill="${fg}"/>`;x+=t;}}
-  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="${w}" height="${h}" fill="${bg}"/>${g}</svg>`;
-}
-
 function mapData(authors,categories,issues,posts,images){
   CATS={}; categories.forEach(c=>CATS[c.slug]={id:c.id,ko:c.name,desc:CATEGORY_DESCRIPTIONS[c.slug]||""});
   WRITERS=authors.map(a=>({id:a.id,name:a.name,initials:a.initials||"",field:a.specialties||"",bio:a.bio||"",sort:a.sort_order||0}));
@@ -287,7 +274,7 @@ async function seedWriters(){
   await loadData();
 }
 
-const media=p=>p.image?`<img src="${esc(p.image)}" alt="${esc(p.title)}">`:(p.images[0]?`<img src="${esc(p.images[0])}" alt="${esc(p.title)}">`:art(p.id));
+const media=p=>p.image?`<img src="${esc(p.image)}" alt="${esc(p.title)}">`:(p.images[0]?`<img src="${esc(p.images[0])}" alt="${esc(p.title)}">`:"");
 const bodyHtml=p=>(p.body||LOREM.join("\n\n")).split(/\n\s*\n/).filter(Boolean).map(t=>`<p>${esc(t).replace(/\n/g,"<br>")}</p>`).join("");
 
 function row(p,showAuthor=true){
@@ -295,11 +282,11 @@ function row(p,showAuthor=true){
   return `<li><a href="#/post/${p.id}"><span class="cat">${esc(cat?.ko||"미분류")}</span><div><h4>${esc(p.title)}</h4><p class="sub">${esc(p.sub)}</p></div><span class="meta">${showAuthor?esc(writer?.name||"필진 미지정")+"<br>":""}${esc(issueName(iss))}</span></a></li>`;
 }
 function archive(k){const items=POSTS.filter(p=>p.cat===k),head=CATS[k];if(!head)return notFound();return `<div class="pagehead"><h1>${esc(head.ko)}</h1><p>${esc(head.desc)}</p></div>${items.length?`<ul class="list">${items.map(p=>row(p)).join("")}</ul>`:"<p>이 분류에는 아직 글이 없다.</p>"}`;}
-function issues(){return `<div class="pagehead"><h1>발행호</h1><p>공통감은 매달 한 호씩 발행한다</p></div>${ISSUES.length?`<div class="covers">${ISSUES.map(i=>{const n=POSTS.filter(p=>p.issue===i.id).length;return `<a class="cover" href="#/issue/${i.id}"><div class="sheet">${art(i.slug,300,400)}<div class="mast"><b>공통감</b><span>${esc(i.description)}</span></div><div class="no">${esc(i.title)}</div></div><h3>${esc(issueName(i))}</h3><p>글 ${n}편</p></a>`;}).join("")}</div>`:"<p>아직 등록된 발행호가 없다.</p>"}`;}
-function issue(id){const i=ISSUES.find(x=>x.id===String(id));if(!i)return notFound();const items=POSTS.filter(p=>p.issue===String(id));return `<div class="pagehead issuehead"><div><h1>${esc(issueName(i))}</h1><p>${esc(i.description)} · 글 ${items.length}편</p></div><a class="back" style="margin:0" href="#/issues">발행호 목록</a></div><div class="tiles">${items.map(p=>{const w=W(p.w);return `<a class="tile" href="#/post/${p.id}" aria-label="${esc(p.title)}, ${esc(w?.name||"")}"><div class="img">${media(p)}<div class="cap"><h4>${esc(p.title)}</h4><span>${esc(w?.name||"필진 미지정")}</span></div></div><div class="below"><h4>${esc(p.title)}</h4><span>${esc(w?.name||"필진 미지정")}</span></div></a>`;}).join("")}</div>`;}
+function issues(){return `<div class="pagehead"><h1>발행호</h1><p>공통감은 매달 한 호씩 발행한다</p></div>${ISSUES.length?`<div class="covers">${ISSUES.map(i=>{const n=POSTS.filter(p=>p.issue===i.id).length;return `<a class="cover" href="#/issue/${i.id}"><div class="sheet"><div class="mast"><b>공통감</b><span>${esc(i.description)}</span></div><div class="no">${esc(i.title)}</div></div><h3>${esc(issueName(i))}</h3><p>글 ${n}편</p></a>`;}).join("")}</div>`:"<p>아직 등록된 발행호가 없다.</p>"}`;}
+function issue(id){const i=ISSUES.find(x=>x.id===String(id));if(!i)return notFound();const items=POSTS.filter(p=>p.issue===String(id));return `<div class="pagehead issuehead"><div><h1>${esc(issueName(i))}</h1><p>${esc(i.description)} · 글 ${items.length}편</p></div><a class="back" style="margin:0" href="#/issues">발행호 목록</a></div><div class="tiles">${items.map(p=>{const w=W(p.w),picture=media(p);return `<a class="tile" href="#/post/${p.id}" aria-label="${esc(p.title)}, ${esc(w?.name||"")}">${picture?`<div class="img">${picture}<div class="cap"><h4>${esc(p.title)}</h4><span>${esc(w?.name||"필진 미지정")}</span></div></div><div class="below"><h4>${esc(p.title)}</h4><span>${esc(w?.name||"필진 미지정")}</span></div>`:`<div class="below no-image"><h4>${esc(p.title)}</h4><span>${esc(w?.name||"필진 미지정")}</span></div>`}</a>`;}).join("")}</div>`;}
 function writers(){return `<div class="pagehead"><h1>필진</h1><p>공통감에 글을 쓰는 사람들</p></div>${WRITERS.length?`<div class="writers">${WRITERS.map(w=>{const n=POSTS.filter(p=>p.w===w.id).length;return `<a href="#/writer/${w.id}"><span class="initial">${esc(initial(w))}</span><h3>${esc(w.name)}</h3><p>${esc(w.field)}</p><span class="meta">쓴 글 ${n}편</span></a>`;}).join("")}</div>`:"<p>아직 등록된 필진이 없다.</p>"}<a class="writers-login" href="#/editor">${editorLoggedIn()?"편집실":"편집자 로그인"}</a>`;}
 function writer(id){const w=W(id);if(!w)return notFound();const mine=POSTS.filter(p=>p.w===w.id);return `<section class="profile"><span class="initial">${esc(initial(w))}</span><div><h1>${esc(w.name)}</h1><p class="field">${esc(w.field)}</p><p class="bio">${esc(w.bio)}</p></div></section><div class="histhead"><h2>쓴 글</h2><span class="meta">${mine.length}편</span></div>${mine.length?`<ul class="list">${mine.map(p=>row(p,false)).join("")}</ul>`:"<p>아직 쓴 글이 없다.</p>"}<a class="back" href="#/writers">필진 목록으로 돌아가기</a>`;}
-function post(id){const p=POSTS.find(x=>String(x.id)===String(id));if(!p)return notFound();const w=W(p.w),iss=ISSUES.find(i=>i.id===p.issue),cat=CATS[p.cat];const gallery=p.images.filter(src=>src!==p.image);return `<article><a class="cat" href="#/issue/${esc(iss?.id||"")}">${esc(issueName(iss))}</a> <span class="cat">· ${esc(cat?.ko||"미분류")}</span><h1>${esc(p.title)}</h1><p class="lede">${esc(p.sub)}</p><div class="byline meta"><a href="#/writer/${esc(w?.id||"")}">${esc(w?.name||"필진 미지정")}</a><span>${esc(p.date)}</span></div><div class="tile" style="margin-bottom:30px"><div class="img">${media(p)}</div></div><div class="body">${bodyHtml(p)}</div>${gallery.length?`<div class="post-gallery">${gallery.map((src,i)=>`<figure><img src="${esc(src)}" alt="${esc(p.title)} 이미지 ${i+1}"></figure>`).join("")}</div>`:""}<a class="back" href="#/issue/${esc(iss?.id||"")}">${esc(issueName(iss))}로 돌아가기</a></article>`;}
+function post(id){const p=POSTS.find(x=>String(x.id)===String(id));if(!p)return notFound();const w=W(p.w),iss=ISSUES.find(i=>i.id===p.issue),cat=CATS[p.cat],picture=media(p);const gallery=p.images.filter(src=>src!==p.image);return `<article><a class="cat" href="#/issue/${esc(iss?.id||"")}">${esc(issueName(iss))}</a> <span class="cat">· ${esc(cat?.ko||"미분류")}</span><h1>${esc(p.title)}</h1><p class="lede">${esc(p.sub)}</p><div class="byline meta"><a href="#/writer/${esc(w?.id||"")}">${esc(w?.name||"필진 미지정")}</a><span>${esc(p.date)}</span></div>${picture?`<div class="tile" style="margin-bottom:30px"><div class="img">${picture}</div></div>`:""}<div class="body">${bodyHtml(p)}</div>${gallery.length?`<div class="post-gallery">${gallery.map((src,i)=>`<figure><img src="${esc(src)}" alt="${esc(p.title)} 이미지 ${i+1}"></figure>`).join("")}</div>`:""}<a class="back" href="#/issue/${esc(iss?.id||"")}">${esc(issueName(iss))}로 돌아가기</a></article>`;}
 function about(){return `<div class="about"><div class="pagehead"><h1>공통감</h1><p>씨네꼼 비평웹진</p></div><p>공통감은 서울대학교 영화 동아리 씨네꼼이 펴내는 비평웹진이다. 매달 한 호씩, 여러 필진이 쓴 글을 묶어 발행한다.</p><dl><dt>발행</dt><dd>씨네꼼</dd><dt>필진</dt><dd>${WRITERS.map(w=>`<a href="#/writer/${w.id}" style="border-bottom:1px solid">${esc(w.name)}</a>`).join(", ")}</dd><dt>발행 주기</dt><dd>월간</dd><dt>분류</dt><dd>${Object.values(CATS).map(c=>esc(c.ko)).join(", ")}</dd></dl></div>`;}
 function notFound(){return `<p>찾는 페이지가 없다. <a href="#/" style="border-bottom:1px solid">처음으로 가기</a></p>`;}
 
