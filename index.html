@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
 <meta name="color-scheme" content="light">
-<title>비평웹진 공통감</title>
+<title>서울대학교 영화공동체 씨네꼼 웹진 공통감</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
@@ -55,7 +55,7 @@ body.home footer{position:fixed;left:0;right:0;bottom:0;border-top-color:transpa
 .list{list-style:none;margin:0;padding:0}
 .list li{border-bottom:1px solid var(--ink)}
 .list a{display:grid;grid-template-columns:90px 1fr 150px;gap:24px;padding:22px 0;align-items:baseline}
-.list a:hover h4{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
+.list a:hover{background:#eef700}.list a:hover h4{text-decoration:none}
 .list h4{margin:0 0 4px;font-family:var(--serif);font-size:1.18rem;font-weight:600;line-height:1.45}
 .list .sub{margin:0;font-size:.92rem;font-weight:400}
 .list .meta{text-align:right}
@@ -117,7 +117,7 @@ article .body .ql-align-justify{text-align:justify;text-align-last:left}
 .cover .no{position:absolute;left:18px;bottom:14px;font-family:var(--serif);font-weight:700;font-size:clamp(2.2rem,5vw,3.4rem);line-height:1;background:var(--paper);padding:6px 10px 8px;border:1px solid var(--ink)}
 .cover h3{margin:14px 0 2px;font-family:var(--serif);font-size:1.2rem}
 .cover p{margin:0;font-size:.88rem}
-.cover:hover h3{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
+.cover:hover{background:#eef700}.cover-photo{position:absolute;left:12%;right:12%;top:22%;bottom:19%;overflow:hidden;display:grid;place-items:center}.cover-photo img{width:100%;height:100%;object-fit:cover;filter:none;margin:0!important}.cover:hover h3{text-decoration:none}
 
 .issuehead{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
 .tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;align-items:start}
@@ -130,6 +130,7 @@ article .body .ql-align-justify{text-align:justify;text-align-last:left}
 .tile .cap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;gap:10px;opacity:0;transition:opacity .35s ease}
 .tile .cap h4{margin:0;font-family:var(--serif);font-size:1.25rem;line-height:1.4;font-weight:700;word-break:keep-all;background:var(--paper);padding:2px 8px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .tile .cap span{font-size:.85rem;background:var(--paper);padding:1px 8px}
+.issue-view-switch{display:flex;gap:8px;margin:0 0 22px}.issue-view-switch button{width:auto;padding:7px 14px;border:1px solid var(--ink);background:var(--paper);cursor:pointer;font:inherit}.issue-view-switch button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}.issue-text-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.issue-text-item{min-height:78px;border:1px solid var(--ink);padding:14px;display:flex;align-items:center;font-family:var(--serif);font-weight:600}.issue-text-item:hover{background:#eef700}.issue-design-preview{position:relative;width:min(100%,280px);aspect-ratio:3/4;overflow:hidden;border:1px solid var(--ink);background:#f4f4f4}.issue-design-preview img{width:100%;height:100%;object-fit:cover;filter:none}.issue-design-preview .preview-center{position:absolute;inset:38% 0 auto;text-align:center;background:#fff;padding:8px;font-family:var(--serif)}
 .tile .below{display:none;margin-top:10px}
 .tile .below.no-image{display:block;margin-top:0;padding:18px;border:1px solid var(--ink);min-height:120px}
 .tile .below h4{margin:0;font-family:var(--serif);font-size:1.05rem}
@@ -138,6 +139,7 @@ article .body .ql-align-justify{text-align:justify;text-align-last:left}
   .tiles .tile:hover .cap,.tiles .tile:focus-visible .cap{opacity:1}
 }
 @media (hover:none){.tile .below{display:block}}
+.issue-images.is-hidden,.issue-texts.is-hidden{display:none}
 
 footer{border-top:1px solid var(--ink)}
 footer .bar{font-size:.8rem}
@@ -148,7 +150,7 @@ footer .bar{font-size:.8rem}
 .editor-login h1,.editor h1,.editor h2{font-family:var(--serif)}
 .editor-note{border:1px solid var(--ink);padding:12px 14px;margin:0 0 24px;font-size:.88rem}
 .editor-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:32px;align-items:start}
-.editor-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--ink);margin:0 0 34px}
+.editor-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--ink);margin:0 0 34px}
 .editor-nav a{display:flex;min-height:58px;align-items:center;justify-content:center;padding:12px 8px;text-align:center;font-weight:600;font-size:.88rem;border-right:1px solid var(--ink)}
 .editor-nav a:last-child{border-right:0}
 .editor-nav a:hover,.editor-nav a:focus-visible,.editor-nav a.on{background:var(--ink);color:var(--paper)}
@@ -212,7 +214,7 @@ footer .bar{font-size:.8rem}
   .editor-nav a:nth-child(-n+2){border-bottom:1px solid var(--ink)}
   .editor-home-grid{grid-template-columns:1fr}
 }
-@media (max-width:520px){.writers,.tiles{grid-template-columns:1fr}.writers a{min-height:0}.covers{gap:28px 16px}}
+@media (max-width:520px){.writers,.tiles,.issue-text-list{grid-template-columns:1fr}.writers a{min-height:0}.covers{gap:28px 16px}}
 @media (max-width:520px){.post-gallery{grid-template-columns:1fr}.upload-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (prefers-reduced-motion:reduce){#menu,#menu.open,.tile .img svg,.tile .cap{transition:none}}
 
@@ -277,7 +279,6 @@ body.home .home-horse-stage{display:grid}
   <nav id="nav">
     <a href="#/issues" data-k="issues">발행호</a>
     <span id="categoryNav" style="display:contents"></span>
-    <a href="#/writers" data-k="writers">필진</a>
     <a href="#/about" data-k="about">소개</a>
   </nav>
 </div>
@@ -336,7 +337,7 @@ body.home .home-horse-stage{display:grid}
 </script>
 
 
-<footer><div class="bar"><span>비평웹진 공통감 · 씨네꼼</span><span>자체 웹사이트 시안</span></div></footer>
+<footer><div class="bar"><span>서울대학교 영화공동체 씨네꼼 웹진 공통감</span><span>자체 웹사이트 시안</span></div></footer>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
@@ -351,10 +352,11 @@ const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: { persistSession:true, autoRefreshToken:true, detectSessionInUrl:false }
 });
 
-const MENU_CATEGORY_IDS = ["criticism","essay","program"];
+const MENU_CATEGORY_IDS = ["criticism","essay","review","program"];
 const CATEGORY_DESCRIPTIONS = {
   criticism:"필진 연재 비평과 상영작 리뷰",
   essay:"영화를 둘러싼 산문",
+  review:"영화 리뷰",
   program:"상영 프로그램과 기획 소개"
 };
 const DEFAULT_WRITERS = [
@@ -382,9 +384,9 @@ const sanitizeBody = value => DOMPurify.sanitize(String(value||""),{
 const storedBodyHtml = value => sanitizeBody(looksLikeHtml(value)?value:plainTextToHtml(value));
 
 function mapData(authors,categories,issues,posts,images){
-  CATS={}; categories.forEach(c=>CATS[c.slug]={id:c.id,ko:c.name,desc:CATEGORY_DESCRIPTIONS[c.slug]||""});
+  CATS={}; categories.forEach(c=>CATS[c.slug]={id:c.id,ko:c.name,desc:CATEGORY_DESCRIPTIONS[c.slug]||""}); if(!CATS.review) CATS.review={id:null,ko:"리뷰",desc:CATEGORY_DESCRIPTIONS.review};
   WRITERS=authors.map(a=>({id:a.id,name:a.name,initials:a.initials||"",field:a.specialties||"",bio:a.bio||"",sort:a.sort_order||0}));
-  ISSUES=issues.map(i=>({id:String(i.id),dbid:i.id,title:i.title,slug:i.slug,description:i.description||"",published_at:i.published_at,is_current:i.is_current}));
+  ISSUES=issues.map(i=>{const parsedIssueDescription=parseIssueDescription(i.description||"");return {id:String(i.id),dbid:i.id,title:i.title,slug:i.slug,description:parsedIssueDescription.description,design:parsedIssueDescription.design,published_at:i.published_at,is_current:i.is_current};});
   const categoryById=Object.fromEntries(categories.map(c=>[String(c.id),c.slug]));
   const grouped={}; images.forEach(img=>(grouped[String(img.post_id)]||=[]).push(img));
   POSTS=posts.map(p=>{
@@ -424,18 +426,23 @@ function row(p,showAuthor=true){
   return `<li><a href="#/post/${p.id}"><span class="cat">${esc(cat?.ko||"미분류")}</span><div><h4>${esc(p.title)}</h4><p class="sub">${esc(p.sub)}</p></div><span class="meta">${showAuthor?esc(writer?.name||"필진 미지정")+"<br>":""}${esc(issueName(iss))}</span></a></li>`;
 }
 function archive(k){const items=POSTS.filter(p=>p.cat===k),head=CATS[k];if(!head)return notFound();return `<div class="pagehead"><h1>${esc(head.ko)}</h1><p>${esc(head.desc)}</p></div>${items.length?`<ul class="list">${items.map(p=>row(p)).join("")}</ul>`:"<p>이 분류에는 아직 글이 없다.</p>"}`;}
-function issues(){return `<div class="pagehead"><h1>발행호</h1><p>공통감은 매달 한 호씩 발행한다</p></div>${ISSUES.length?`<div class="covers">${ISSUES.map(i=>{const n=POSTS.filter(p=>p.issue===i.id).length;return `<a class="cover" href="#/issue/${i.id}"><div class="sheet"><div class="mast"><b>공통감</b><span>${esc(i.description)}</span></div><div class="no">${esc(i.title)}</div></div><h3>${esc(issueName(i))}</h3><p>글 ${n}편</p></a>`;}).join("")}</div>`:"<p>아직 등록된 발행호가 없다.</p>"}`;}
-function issue(id){const i=ISSUES.find(x=>x.id===String(id));if(!i)return notFound();const items=POSTS.filter(p=>p.issue===String(id));return `<div class="pagehead issuehead"><div><h1>${esc(issueName(i))}</h1><p>${esc(i.description)} · 글 ${items.length}편</p></div><a class="back" style="margin:0" href="#/issues">발행호 목록</a></div><div class="tiles">${items.map(p=>{const w=W(p.w),picture=media(p);return `<a class="tile" href="#/post/${p.id}" aria-label="${esc(p.title)}, ${esc(w?.name||"")}">${picture?`<div class="img">${picture}<div class="cap"><h4>${esc(p.title)}</h4><span>${esc(w?.name||"필진 미지정")}</span></div></div><div class="below"><h4>${esc(p.title)}</h4><span>${esc(w?.name||"필진 미지정")}</span></div>`:`<div class="below no-image"><h4>${esc(p.title)}</h4><span>${esc(w?.name||"필진 미지정")}</span></div>`}</a>`;}).join("")}</div>`;}
+function issues(){return `<div class="pagehead"><h1>발행호</h1><p>공통감은 매달 한 호씩 발행한다</p></div>${ISSUES.length?`<div class="covers">${ISSUES.map(i=>{const n=POSTS.filter(p=>p.issue===i.id).length,d=designFor(i.id);return `<a class="cover" href="#/issue/${i.id}"><div class="sheet"><div class="mast"><b>공통감</b><span>${esc(i.description)}</span></div>${d.image?`<div class="cover-photo"><img src="${esc(d.image)}" alt="${esc(issueName(i))} 표지" style="object-position:${d.x}% ${d.y}%;transform:scale(${Number(d.zoom)/100})"></div>`:""}<div class="no">${esc(i.title)}</div></div><h3>${esc(issueName(i))}</h3><p>글 ${n}편</p></a>`;}).join("")}</div>`:"<p>아직 등록된 발행호가 없다.</p>"}`;}
+function issue(id){const i=ISSUES.find(x=>x.id===String(id));if(!i)return notFound();const items=POSTS.filter(p=>p.issue===String(id));return `<div class="pagehead issuehead"><div><h1>${esc(issueName(i))}</h1><p>${esc(i.description)} · 글 ${items.length}편</p></div><a class="back" style="margin:0" href="#/issues">발행호 목록</a></div><div class="issue-view-switch" role="group" aria-label="글 보기 방식"><button type="button" data-issue-view="images" aria-pressed="true">이미지</button><button type="button" data-issue-view="texts" aria-pressed="false">글</button></div><div class="issue-images"><div class="tiles">${items.map(p=>{const w=W(p.w),picture=media(p);return `<a class="tile" href="#/post/${p.id}" aria-label="${esc(p.title)}, ${esc(w?.name||"")}">${picture?`<div class="img">${picture}<div class="cap"><h4>${esc(p.title)}</h4><span>${esc(w?.name||"필진 미지정")}</span></div></div><div class="below"><h4>${esc(p.title)}</h4><span>${esc(w?.name||"필진 미지정")}</span></div>`:`<div class="below no-image"><h4>${esc(p.title)}</h4><span>${esc(w?.name||"필진 미지정")}</span></div>`}</a>`;}).join("")}</div></div><div class="issue-texts is-hidden"><div class="issue-text-list">${items.map(p=>`<a class="issue-text-item" href="#/post/${p.id}">${esc(p.title)}</a>`).join("")||"<p>아직 글이 없다.</p>"}</div></div>`;}
 function writers(){return `<div class="pagehead"><h1>필진</h1><p>공통감에 글을 쓰는 사람들</p></div>${WRITERS.length?`<div class="writers">${WRITERS.map(w=>{const n=POSTS.filter(p=>p.w===w.id).length;return `<a href="#/writer/${w.id}"><span class="initial">${esc(initial(w))}</span><h3>${esc(w.name)}</h3><p>${esc(w.field)}</p><span class="meta">쓴 글 ${n}편</span></a>`;}).join("")}</div>`:"<p>아직 등록된 필진이 없다.</p>"}<a class="writers-login" href="#/editor">${editorLoggedIn()?"편집실":"편집자 로그인"}</a>`;}
 function writer(id){const w=W(id);if(!w)return notFound();const mine=POSTS.filter(p=>p.w===w.id);return `<section class="profile"><span class="initial">${esc(initial(w))}</span><div><h1>${esc(w.name)}</h1><p class="field">${esc(w.field)}</p><p class="bio">${esc(w.bio)}</p></div></section><div class="histhead"><h2>쓴 글</h2><span class="meta">${mine.length}편</span></div>${mine.length?`<ul class="list">${mine.map(p=>row(p,false)).join("")}</ul>`:"<p>아직 쓴 글이 없다.</p>"}<a class="back" href="#/writers">필진 목록으로 돌아가기</a>`;}
 function post(id){const p=POSTS.find(x=>String(x.id)===String(id));if(!p)return notFound();const w=W(p.w),iss=ISSUES.find(i=>i.id===p.issue),cat=CATS[p.cat];const gallery=p.images.filter(src=>src!==p.image);return `<article class="post-page"><a class="cat" href="#/issue/${esc(iss?.id||"")}">${esc(issueName(iss))}</a> <span class="cat">· ${esc(cat?.ko||"미분류")}</span><h1>${esc(p.title)}</h1><p class="lede">${esc(p.sub)}</p><div class="byline meta"><a href="#/writer/${esc(w?.id||"")}">${esc(w?.name||"필진 미지정")}</a><span>${esc(p.date)}</span></div><div class="body">${bodyHtml(p)}</div>${gallery.length?`<div class="post-gallery">${gallery.map((src,i)=>`<figure><img src="${esc(src)}" alt="${esc(p.title)} 이미지 ${i+1}"></figure>`).join("")}</div>`:""}<a class="back" href="#/issue/${esc(iss?.id||"")}">${esc(issueName(iss))}로 돌아가기</a></article>`;}
 function about(){return `<div class="about"><div class="pagehead"><h1>공통감</h1><p>씨네꼼 비평웹진</p></div><p>공통감은 서울대학교 영화 동아리 씨네꼼이 펴내는 비평웹진이다. 매달 한 호씩, 여러 필진이 쓴 글을 묶어 발행한다.</p><dl><dt>발행</dt><dd>씨네꼼</dd><dt>필진</dt><dd>${WRITERS.map(w=>`<a href="#/writer/${w.id}" style="border-bottom:1px solid">${esc(w.name)}</a>`).join(", ")}</dd><dt>발행 주기</dt><dd>월간</dd><dt>분류</dt><dd>${Object.values(CATS).map(c=>esc(c.ko)).join(", ")}</dd></dl></div>`;}
 function notFound(){return `<p>찾는 페이지가 없다. <a href="#/" style="border-bottom:1px solid">처음으로 가기</a></p>`;}
 
-function renderCategoryNav(){const host=document.getElementById("categoryNav");if(host)host.innerHTML=MENU_CATEGORY_IDS.filter(id=>CATS[id]).map(id=>`<a href="#/archive/${esc(id)}" data-k="${esc(id)}">${esc(CATS[id].ko)}</a>`).join("");}
+function renderCategoryNav(){const host=document.getElementById("categoryNav"),labels={criticism:"비평",essay:"에세이",review:"리뷰",program:"프로그램"};if(host)host.innerHTML=MENU_CATEGORY_IDS.map(id=>`<a href="#/archive/${esc(id)}" data-k="${esc(id)}">${labels[id]}</a>`).join("");}
+async function ensureReviewCategory(){if(!editorLoggedIn()||CATS.review?.id)return;const {error}=await db.from("categories").insert({slug:"review",name:"리뷰",sort_order:4});if(error)throw error;await loadData();}
+const ISSUE_DESIGN_MARKER="\n[[gongtonggam-cover:v1:";
+function parseIssueDescription(value){const match=String(value||"").match(/\n?\[\[gongtonggam-cover:v1:([A-Za-z0-9+/=]+)\]\]$/);if(!match)return {description:String(value||""),design:null};try{return {description:String(value||"").slice(0,match.index),design:JSON.parse(decodeURIComponent(escape(atob(match[1]))))}}catch{return {description:String(value||""),design:null}}}
+function encodeIssueDescription(description,design){const payload=btoa(unescape(encodeURIComponent(JSON.stringify(design))));return `${description||""}${ISSUE_DESIGN_MARKER}${payload}]]`;}
+function designFor(issueId){return ISSUES.find(i=>i.id===String(issueId))?.design||{image:"",file_path:"",x:50,y:50,zoom:100}}
 function editorLogin(){return `<section class="editor editor-login"><h1>편집자 로그인</h1><form id="loginForm"><label>비밀번호<input name="password" type="password" autocomplete="current-password" required autofocus></label><button class="primary" type="submit">로그인</button><p class="status" role="status"></p></form><a class="back" href="#/writers">필진 목록으로 돌아가기</a></section>`;}
 function editorNav(current=""){
-  const items=[["new","새 글 작성"],["posts","기존 글"],["writers","필진 관리"],["categories","카테고리 관리"]];
+  const items=[["new","새 글 작성"],["posts","기존 글"],["writers","필진 관리"],["categories","카테고리 관리"],["design","발행호 디자인"]];
   return `<nav class="editor-nav" aria-label="편집실 메뉴">${items.map(([id,label])=>`<a class="${current===id?"on":""}" href="#/editor/${id}">${label}</a>`).join("")}</nav>`;
 }
 function editorShell(current,content){
@@ -446,6 +453,7 @@ function editorPostForm(editId){
   const p=editing||{title:"",sub:"",body:"",w:WRITERS[0]?.id||"",cat:Object.keys(CATS)[0]||"",issue:ISSUES[0]?.id||"",date:today,image:"",images:[],imageRecords:[]};
   return `<section class="editor-panel editor-section"><h2>${editing?"글 수정":"새 글 작성"}</h2><form id="postForm" data-id="${editing?editing.id:""}"><label>제목<input name="title" value="${esc(p.title)}" required></label><label>부제 또는 소개문<input name="sub" value="${esc(p.sub)}"></label><div class="editor-field"><span class="editor-field-label">본문</span><div class="quill-wrap"><div id="articleEditor">${storedBodyHtml(p.body)}</div></div><span class="upload-help">상단 도구로 제목, 굵게, 기울임, 인용, 목록, 정렬, 링크와 본문 이미지를 넣을 수 있습니다.</span></div><label>필진<select name="writer" required>${WRITERS.map(w=>`<option value="${w.id}" ${w.id===p.w?"selected":""}>${esc(w.name)}</option>`).join("")}</select></label><label>카테고리<select name="category" required>${Object.entries(CATS).map(([slug,c])=>`<option value="${esc(slug)}" ${slug===p.cat?"selected":""}>${esc(c.ko)}</option>`).join("")}</select></label><label>발행호<select name="issue" required>${ISSUES.map(i=>`<option value="${i.id}" ${i.id===p.issue?"selected":""}>${esc(i.title)}</option>`).join("")}</select></label><label>발행일<input name="date" value="${esc(p.date||today)}" placeholder="2026.09.22" required></label><label>대표·갤러리 이미지 파일<input name="images" type="file" accept="image/*" multiple></label><span class="upload-help">여러 파일을 한 번에 선택할 수 있습니다. 첫 번째 이미지는 대표 이미지로 사용됩니다. 본문 중간 이미지는 위 에디터의 이미지 버튼을 사용하세요.</span>${p.imageRecords?.length?`<div class="upload-grid">${p.imageRecords.map(x=>`<label><img src="${esc(x.public_url)}" alt="현재 이미지"><span><input type="checkbox" name="removeImage" value="${x.id}"> 삭제</span></label>`).join("")}</div>`:""}<label>대표 이미지 외부 URL <span style="font-weight:400">(선택)</span><input name="image" type="url" value="${p.image&&!p.images.includes(p.image)?esc(p.image):""}" placeholder="https://..."></label><div class="editor-actions"><button class="primary" type="submit">${editing?"수정 저장":"글 게시"}</button><a class="inline" href="#/editor/posts">취소</a></div><p class="status" role="status"></p></form></section>`;
 }
+function editorIssueDesign(){return `<section class="editor-panel editor-section"><h2>발행호 디자인</h2><p class="editor-note">표지 사진과 크롭 설정은 발행호 정보에 저장되어 방문자에게도 표시됩니다. 사진은 가운데에 배치됩니다.</p>${ISSUES.map(i=>{const d=designFor(i.id);return `<form class="editor-mini issue-design-form" data-id="${esc(i.id)}"><h3>${esc(issueName(i))}</h3><label>표지 사진<input name="photo" type="file" accept="image/*"></label><span class="upload-help">선택한 사진은 표지 중앙에 들어갑니다. 이미지 파일은 20MB 이하로 선택하세요.</span><div class="issue-design-preview">${d.image?`<img class="design-preview-img" src="${esc(d.image)}" style="object-position:${d.x}% ${d.y}%;transform:scale(${Number(d.zoom)/100})" alt="표지 미리보기">`:"<span>표지 사진 미리보기</span>"}<div class="preview-center">${esc(issueName(i))}</div></div><label>가로 위치<input name="x" type="range" min="0" max="100" value="${Number(d.x)}"></label><label>세로 위치<input name="y" type="range" min="0" max="100" value="${Number(d.y)}"></label><label>확대 / 크롭<input name="zoom" type="range" min="100" max="220" value="${Number(d.zoom)}"></label><div class="editor-actions"><button class="primary" type="submit">표지 설정 저장</button><button class="clear-design" type="button">표지 사진 지우기</button></div><p class="status" role="status"></p></form>`}).join("")||"<p>먼저 발행호를 추가하세요.</p>"}</section>`;}
 function editor(view="",editId=null){
   if(!editorLoggedIn())return editorLogin();
   if(view==="new")return editorShell("new",editorPostForm());
@@ -455,8 +463,9 @@ function editor(view="",editId=null){
     return editorShell("posts",`<section class="editor-panel editor-section"><h2>기존 글</h2><ul class="editor-list">${list||"<li>아직 글이 없습니다.</li>"}</ul></section>`);
   }
   if(view==="writers")return editorShell("writers",`<section class="editor-panel editor-section"><h2>필진 관리</h2>${WRITERS.map(w=>`<form class="editor-mini writer-form" data-id="${w.id}"><h3>${esc(w.name)}</h3><label>이름<input name="name" value="${esc(w.name)}" required></label><label>분야<input name="field" value="${esc(w.field)}"></label><label>소개<textarea name="bio">${esc(w.bio)}</textarea></label><button type="submit">필진 정보 저장</button></form>`).join("")}<form id="writerAddForm" class="editor-mini"><h3>필진 추가</h3><label>이름<input name="name" required></label><label>분야<input name="field"></label><label>소개<textarea name="bio"></textarea></label><button type="submit">필진 추가</button></form></section>`);
+  if(view==="design")return editorShell("design",editorIssueDesign());
   if(view==="categories")return editorShell("categories",`<section class="editor-panel editor-section"><h2>카테고리 관리</h2>${Object.entries(CATS).map(([slug,c])=>`<form class="editor-mini category-form" data-id="${c.id}"><h3>${esc(c.ko)}</h3><label>표시 이름<input name="name" value="${esc(c.ko)}" required></label><button type="submit">카테고리 저장</button></form>`).join("")}<form id="categoryAddForm" class="editor-mini"><h3>카테고리 추가</h3><label>영문 주소<input name="slug" pattern="[a-z0-9-]+" required></label><label>표시 이름<input name="name" required></label><button type="submit">카테고리 추가</button></form></section><section class="editor-panel editor-section"><h2>발행호 추가</h2><form id="issueAddForm" class="editor-mini"><label>연도<input name="year" type="number" min="2000" max="2100" required></label><label>월<input name="month" type="number" min="1" max="12" required></label><label>호수<input name="vol" type="number" min="1" required></label><button type="submit">발행호 추가</button></form></section><section class="editor-panel editor-section"><h2>데이터 백업</h2><button id="exportBtn" type="button">JSON 백업 내려받기</button></section>`);
-  return editorShell("",`<div class="editor-home-grid"><a class="editor-home-card" href="#/editor/new"><h2>새 글 작성</h2><p>Quill 편집기로 새 글과 본문 이미지를 작성합니다.</p></a><a class="editor-home-card" href="#/editor/posts"><h2>기존 글</h2><p>게시된 글을 찾아 수정하거나 삭제합니다.</p></a><a class="editor-home-card" href="#/editor/writers"><h2>필진 관리</h2><p>필진 이름, 분야와 소개를 관리합니다.</p></a><a class="editor-home-card" href="#/editor/categories"><h2>카테고리 관리</h2><p>카테고리와 발행호를 추가하고 백업을 내려받습니다.</p></a></div>`);
+  return editorShell("",`<div class="editor-home-grid"><a class="editor-home-card" href="#/editor/new"><h2>새 글 작성</h2><p>Quill 편집기로 새 글과 본문 이미지를 작성합니다.</p></a><a class="editor-home-card" href="#/editor/posts"><h2>기존 글</h2><p>게시된 글을 찾아 수정하거나 삭제합니다.</p></a><a class="editor-home-card" href="#/editor/writers"><h2>필진 관리</h2><p>필진 이름, 분야와 소개를 관리합니다.</p></a><a class="editor-home-card" href="#/editor/categories"><h2>카테고리 관리</h2><p>카테고리와 발행호를 추가하고 백업을 내려받습니다.</p></a><a class="editor-home-card" href="#/editor/design"><h2>발행호 디자인</h2><p>발행호 표지 사진과 크롭 위치를 설정합니다.</p></a></div>`);
 }
 
 async function prepareImage(file){
@@ -503,8 +512,10 @@ async function uploadImages(postId,files,startOrder){
 }
 
 async function bindEditor(){
+  document.querySelectorAll("[data-issue-view]").forEach(btn=>btn.onclick=()=>{const images=document.querySelector(".issue-images"),texts=document.querySelector(".issue-texts"),showImages=btn.dataset.issueView==="images";images?.classList.toggle("is-hidden",!showImages);texts?.classList.toggle("is-hidden",showImages);document.querySelectorAll("[data-issue-view]").forEach(b=>b.setAttribute("aria-pressed",String(b===btn)));if(showImages)scheduleMasonry();});
+  document.querySelectorAll(".issue-design-form").forEach(form=>{const preview=form.querySelector(".issue-design-preview"),controls=[...form.querySelectorAll("input[type=range]")];const update=()=>{let img=preview.querySelector("img");if(img){img.style.objectPosition=`${form.elements.x.value}% ${form.elements.y.value}%`;img.style.transform=`scale(${Number(form.elements.zoom.value)/100})`;}};controls.forEach(input=>input.addEventListener("input",update));form.elements.photo.addEventListener("change",()=>{const file=form.elements.photo.files?.[0];if(!file)return;if(!file.type.startsWith("image/")){alert("이미지 파일만 선택하세요.");return;}const reader=new FileReader();reader.onload=()=>{let img=preview.querySelector("img");if(!img){img=document.createElement("img");img.className="design-preview-img";img.alt="표지 미리보기";preview.prepend(img);}img.src=reader.result;update();};reader.readAsDataURL(file);});form.onsubmit=async e=>{e.preventDefault();const img=preview.querySelector("img"),status=form.querySelector(".status"),file=form.elements.photo.files?.[0];if(!img){status.textContent="표지 사진을 먼저 선택하세요.";return;}status.textContent="표지 사진과 설정을 저장하고 있습니다…";form.classList.add("editor-uploading");try{let design={...designFor(form.dataset.id)};if(file){const prepared=await prepareImage(file),path=`issues/${form.dataset.id}/${Date.now()}-${crypto.randomUUID()}.${prepared.extension}`,upload=await db.storage.from(IMAGE_BUCKET).upload(path,prepared.body,{contentType:prepared.contentType,upsert:false});if(upload.error)throw upload.error;const {data}=db.storage.from(IMAGE_BUCKET).getPublicUrl(path);design.image=data.publicUrl;design.file_path=path;}if(!design.image)throw new Error("표지 사진을 먼저 선택하세요.");design.x=Number(form.elements.x.value);design.y=Number(form.elements.y.value);design.zoom=Number(form.elements.zoom.value);const issueRecord=ISSUES.find(i=>i.id===String(form.dataset.id));if(!issueRecord)throw new Error("발행호를 찾지 못했습니다.");const {error}=await db.from("issues").update({description:encodeIssueDescription(issueRecord.description,design)}).eq("id",issueRecord.dbid);if(error)throw error;const previous=issueRecord.design?.file_path;await loadData();status.textContent="방문자에게 표시될 발행호 표지 설정을 저장했습니다.";if(previous&&previous!==design.file_path)await db.storage.from(IMAGE_BUCKET).remove([previous]);}catch(err){status.textContent=showError(err);}finally{form.classList.remove("editor-uploading");}};form.querySelector(".clear-design").onclick=async()=>{const status=form.querySelector(".status"),issueRecord=ISSUES.find(i=>i.id===String(form.dataset.id));if(!issueRecord)return;try{const {error}=await db.from("issues").update({description:encodeIssueDescription(issueRecord.description,{image:"",file_path:"",x:50,y:50,zoom:100})}).eq("id",issueRecord.dbid);if(error)throw error;if(issueRecord.design?.file_path)await db.storage.from(IMAGE_BUCKET).remove([issueRecord.design.file_path]);await loadData();route();}catch(err){status.textContent=showError(err);}};});
   const login=document.getElementById("loginForm");
-  if(login){login.onsubmit=async e=>{e.preventDefault();const status=login.querySelector(".status"),button=login.querySelector("button");button.disabled=true;status.textContent="로그인 중…";const password=new FormData(login).get("password");const {data,error}=await db.auth.signInWithPassword({email:EDITOR_EMAIL,password});if(error||data.user?.email?.toLowerCase()!==EDITOR_EMAIL.toLowerCase()){if(data.session)await db.auth.signOut();status.textContent="비밀번호가 올바르지 않습니다.";button.disabled=false;return;}EDITOR_USER=data.user;try{await loadData();await seedWriters();location.hash="#/editor";route();}catch(err){status.textContent=showError(err);button.disabled=false;}};return;}
+  if(login){login.onsubmit=async e=>{e.preventDefault();const status=login.querySelector(".status"),button=login.querySelector("button");button.disabled=true;status.textContent="로그인 중…";const password=new FormData(login).get("password");const {data,error}=await db.auth.signInWithPassword({email:EDITOR_EMAIL,password});if(error||data.user?.email?.toLowerCase()!==EDITOR_EMAIL.toLowerCase()){if(data.session)await db.auth.signOut();status.textContent="비밀번호가 올바르지 않습니다.";button.disabled=false;return;}EDITOR_USER=data.user;try{await loadData();await ensureReviewCategory();await seedWriters();location.hash="#/editor";route();}catch(err){status.textContent=showError(err);button.disabled=false;}};return;}
   if(!editorLoggedIn())return;
   document.getElementById("logoutBtn").onclick=async()=>{await db.auth.signOut();EDITOR_USER=null;await loadData();route();};
   const form=document.getElementById("postForm");
@@ -599,7 +610,7 @@ try{
   const {data:{session}}=await db.auth.getSession();
   if(session?.user?.email?.toLowerCase()===EDITOR_EMAIL.toLowerCase())EDITOR_USER=session.user;
   else if(session)await db.auth.signOut();
-  await loadData();if(editorLoggedIn())await seedWriters();renderCategoryNav();route();
+  await loadData();if(editorLoggedIn()){await ensureReviewCategory();await seedWriters();}renderCategoryNav();route();
 }catch(error){document.getElementById("app").innerHTML=`<div class="editor-note"><strong>서버 연결 오류</strong><br>${esc(showError(error))}</div>`;}
 window.addEventListener("hashchange",route);
 </script>
